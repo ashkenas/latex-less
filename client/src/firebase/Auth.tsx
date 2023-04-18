@@ -1,6 +1,6 @@
 import React, { useState, useEffect, PropsWithChildren } from 'react';
-import firebase from 'firebase/compat';
-import firebaseApp from './Firebase';
+import firebase from 'firebase/auth';
+import auth from './Firebase';
 
 type AuthProviderState = {
   currentUser: firebase.User | null,
@@ -16,7 +16,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   });
 
   useEffect(() => {
-    return firebaseApp.auth().onAuthStateChanged((user) => {
+    return auth.onAuthStateChanged((user) => {
       setState({
         currentUser: user,
         loadingUser: false

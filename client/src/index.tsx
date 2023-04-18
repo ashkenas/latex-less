@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import 'styles/index.css';
+import App from './components/App';
 import { AuthProvider } from './firebase/Auth';
 
 const root = ReactDOM.createRoot(
