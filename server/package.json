@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@apollo/server": "^4.6.0",
+    "graphql": "^16.6.0",
+    "mongodb": "^5.2.0"
+  },
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Jacob Ashkenas",
+  "license": "ISC",
+  "description": ""
+}
