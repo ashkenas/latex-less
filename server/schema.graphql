@@ -1,0 +1,36 @@
+type NamedText {
+  _id: ID!
+  name: String!
+  text: String!
+}
+
+type Project {
+  _id: ID!
+  name: String!
+  lastEdited: Int!
+  equations: [NamedText]!
+  responses: [NamedText]!
+}
+
+type User {
+  _id: ID!
+  firebaseId: string!
+  equations: [NamedText]!
+  projects: [Project]!
+}
+
+type Query {
+  userProjects(id: ID!): [Project]
+  userEquations(id: ID!): [NamedText]
+  project(id: ID!): Project
+  equation(id: ID!): NamedText
+  response(id: ID!): NamedText
+}
+
+type Mutation {
+  updateProject(id: ID!, equations: [NamedText], responses: [NamedText]): Project
+  removeProjectEquation(id: ID!): Project
+  removeProjectResponse(id: ID!): Project
+  updateEquation(id: ID!, name: String, text: String): NamedText
+  removeUserEquation(id: ID!): NamedText
+}
