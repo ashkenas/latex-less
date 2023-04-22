@@ -1,12 +1,20 @@
+import { useContext } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { AuthContext } from '../firebase/Auth';
 import styles from '../styles/App.module.scss';
 import Equations from './Equations';
 import ErrorPage from './ErrorPage';
 import Home from './Home';
+import Login from './Login';
 import Project from './Project';
 import SmartLink from './SmartLink';
+import auth from '../firebase/Firebase';
 
 function App() {
+  const user = useContext(AuthContext);
+  if (!user)
+    return <Login />;
+
   return (
     <BrowserRouter>
       <nav>
@@ -15,7 +23,7 @@ function App() {
           <SmartLink to="/equations">Equations</SmartLink>
         </div>
         <div className={styles.left}>
-          <SmartLink to="/logout">Logout</SmartLink>
+          <button onClick={() => auth.signOut()}>Logout</button>
         </div>
       </nav>
       <main>

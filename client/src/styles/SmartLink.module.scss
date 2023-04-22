@@ -2,18 +2,29 @@
 
 @mixin darkHover($bg: white) {
   background-color: $bg;
+
   &:hover {
     background-color: darken($bg, 10%);
+  }
+
+  &:active, &:focus {
+    background-color: darken($bg, 20%);
   }
 }
 
 nav {
-  a {
+  a, button {
     @include darkHover;
+    border: none;
+    outline: none;
     display: inline-block;
     text-decoration: none;
     color: $accent;
     padding: .25rem .5rem;
+  }
+
+  button {
+    height: 100%;
   }
 
   a.here {
