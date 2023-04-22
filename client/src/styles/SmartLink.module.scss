@@ -1,0 +1,23 @@
+@import "./utils";
+
+@mixin darkHover($bg: white) {
+  background-color: $bg;
+  &:hover {
+    background-color: darken($bg, 10%);
+  }
+}
+
+nav {
+  a {
+    @include darkHover;
+    display: inline-block;
+    text-decoration: none;
+    color: $accent;
+    padding: .25rem .5rem;
+  }
+
+  a.here {
+    @include darkHover($accent);
+    color: white;
+  }
+}

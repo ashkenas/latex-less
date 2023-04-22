@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import '../styles/App.css';
+import styles from '../styles/App.module.scss';
 import Equations from './Equations';
 import ErrorPage from './ErrorPage';
 import Home from './Home';
@@ -10,8 +10,13 @@ function App() {
   return (
     <BrowserRouter>
       <nav>
-        <SmartLink to="/">Home</SmartLink>
-        <SmartLink to="/equations">Equations</SmartLink>
+        <div className={styles.right}>
+          <SmartLink to="/">Home</SmartLink>
+          <SmartLink to="/equations">Equations</SmartLink>
+        </div>
+        <div className={styles.left}>
+          <SmartLink to="/logout">Logout</SmartLink>
+        </div>
       </nav>
       <main>
         <Routes>

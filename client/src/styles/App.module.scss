@@ -1,0 +1,10 @@
+@import "./utils";
+
+nav {    
+  display: flex;
+  box-shadow: 0 0 1px 0 black;
+
+  div.left {
+    margin-left: auto;
+  }
+}
