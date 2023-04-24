@@ -4,6 +4,12 @@ type NamedText {
   text: String!
 }
 
+input NamedTextInput {
+  _id: ID!
+  name: String!
+  text: String!
+}
+
 type Project {
   _id: ID!
   name: String!
@@ -14,23 +20,23 @@ type Project {
 
 type User {
   _id: ID!
-  firebaseId: string!
+  firebaseId: String!
   equations: [NamedText]!
   projects: [Project]!
 }
 
 type Query {
-  userProjects(id: ID!): [Project]
-  userEquations(id: ID!): [NamedText]
+  userProjects(id: ID!): [Project]!
+  userEquations(id: ID!): [NamedText]!
   project(id: ID!): Project
   equation(id: ID!): NamedText
   response(id: ID!): NamedText
 }
 
 type Mutation {
-  updateProject(id: ID!, equations: [NamedText], responses: [NamedText]): Project
-  removeProjectEquation(id: ID!): Project
-  removeProjectResponse(id: ID!): Project
-  updateEquation(id: ID!, name: String, text: String): NamedText
-  removeUserEquation(id: ID!): NamedText
+  updateProject(id: ID!, equations: [NamedTextInput], responses: [NamedTextInput]): Project!
+  removeProjectEquation(id: ID!): Project!
+  removeProjectResponse(id: ID!): Project!
+  updateEquation(id: ID!, name: String, text: String): NamedText!
+  removeUserEquation(id: ID!): NamedText!
 }
