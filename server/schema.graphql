@@ -14,20 +14,20 @@ type Project {
   _id: ID!
   name: String!
   lastEdited: Int!
-  equations: [NamedText]!
-  responses: [NamedText]!
+  equations: [NamedText!]!
+  responses: [NamedText!]!
 }
 
 type User {
   _id: ID!
   firebaseId: String!
-  equations: [NamedText]!
-  projects: [Project]!
+  equations: [NamedText!]!
+  projects: [Project!]!
 }
 
 type Query {
-  userProjects(id: ID!): [Project]!
-  userEquations(id: ID!): [NamedText]!
+  userProjects(id: ID!): [Project!]!
+  userEquations(id: ID!): [NamedText!]!
   project(id: ID!): Project
   equation(id: ID!): NamedText
   response(id: ID!): NamedText
