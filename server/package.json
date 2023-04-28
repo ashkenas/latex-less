@@ -11,7 +11,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "compile": "npm run codegen && tsc",
+    "compile": "tsc",
     "start": "npm run compile && node --es-module-specifier-resolution=node ./dist/index.js",
     "codegen": "graphql-codegen --config codegen.ts"
   },

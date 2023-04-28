@@ -21,24 +21,25 @@ type Project {
 type User {
   _id: ID!
   firebaseId: String!
-  equations: [NamedText!]!
-  projects: [Project!]!
+  equations: [NamedText]!
+  projects: [Project]!
 }
 
 type Query {
   userProjects(): [Project!]!
   userEquations(): [NamedText!]!
-  project(id: ID!): Project
-  equation(id: ID!): NamedText
-  # response(id: ID!): NamedText
+  project(id: ID!): Project!
+  equation(id: ID!): NamedText!
+  projectEquation(pid: ID!, eid: ID!): NamedText!
 }
 
 type Mutation {
-  updateProject(id: ID!, equations: [NamedTextInput], responses: [NamedTextInput]): Project!
-  addProjectEquation(id: ID!): Project!
-  addProjectResponse(id: ID!): Project!
-  removeProjectEquation(id: ID!): Project!
-  removeProjectResponse(id: ID!): Project!
-  updateEquation(id: ID!, name: String, text: String): NamedText!
-  removeUserEquation(id: ID!): NamedText!
+  newProject(): Project!
+  updateProject(id: ID!, name: String, equations: [NamedTextInput], responses: [NamedTextInput]): Project!
+  updateEquation(id: ID!, name: String!, text: String!): NamedText!
+  addProjectEquation(id: ID!): NamedText!
+  addProjectResponse(id: ID!): NamedText!
+  removeProjectEquation(pid: ID!, id: ID!): Project!
+  removeProjectResponse(pid: ID!, id: ID!): Project!
+  removeUserEquation(id: ID!): User!
 }
