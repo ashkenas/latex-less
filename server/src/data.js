@@ -1,7 +1,5 @@
 import { GraphQLError } from "graphql";
-import { users } from "./mongo/collections"
-import { User } from "./typings/mongo";
-import { ObjectId } from "mongodb";
+import { users } from "./mongo/collections";
 
 export const stringify = (document) => {
   return { ...document, _id: document._id.toString() };

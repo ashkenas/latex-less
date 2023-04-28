@@ -1,6 +1,4 @@
 import { GraphQLError } from "graphql";
-import { AuthContext } from ".";
-import { QueryResolvers, User } from "./typings/graphql";
 import { Resolvers } from "./typings/graphql";
 import { getUser, stringify } from "./data";
 
