@@ -9,6 +9,7 @@ import Login from './Login';
 import Project from './Project';
 import SmartLink from './SmartLink';
 import auth from '../firebase/Firebase';
+import Projects from './Projects';
 
 function App() {
   const user = useContext(AuthContext);
@@ -21,6 +22,7 @@ function App() {
         <div className={styles.right}>
           <SmartLink to="/">Home</SmartLink>
           <SmartLink to="/equations">Equations</SmartLink>
+          <SmartLink to="/projects">Projects</SmartLink>
         </div>
         <div className={styles.left}>
           <button onClick={() => auth.signOut()}>Logout</button>
@@ -30,7 +32,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/equations" element={<Equations />} />
-          <Route path="/project/:id" element={<Project />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<Project />} />
           <Route path="*" element={<ErrorPage code={404} message='Page not found.' />} />
         </Routes>
       </main>
