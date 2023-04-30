@@ -163,6 +163,7 @@ export const updateEquation = async (uid, id, name, text) => {
   }, {
     $set: {
       "equations.$": {
+        _id: new ObjectId(id),
         name: name,
         text: text
       }
@@ -282,6 +283,7 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
   }, {
     $set: {
       [`projects.$.${array}.$[e]`]: {
+        _id: new ObjectId(pid),
         name: name,
         text: text
       }

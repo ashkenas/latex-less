@@ -6,7 +6,7 @@ import Equations from './Equations';
 import ErrorPage from './ErrorPage';
 import Home from './Home';
 import Login from './Login';
-import Project from './Project';
+import ProjectEditor from './ProjectEditor';
 import SmartLink from './SmartLink';
 import auth from '../firebase/Firebase';
 import Projects from './Projects';
@@ -33,7 +33,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/equations" element={<Equations />} />
           <Route path="/projects" element={<Projects />} />
-          <Route path="/projects/:id" element={<Project />} />
+          <Route path="/projects/:id" element={<ProjectEditor />} />
           <Route path="*" element={<ErrorPage code={404} message='Page not found.' />} />
         </Routes>
       </main>

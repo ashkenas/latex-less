@@ -1,0 +1,34 @@
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/components/card.sass";
+@import "bulma/sass/elements/title.sass";
+@import "bulma/sass/layout/section.sass";
+@import "bulma/sass/elements/container.sass";
+@import "bulma/sass/elements/button.sass";
+
+.card:not(:last-child) {
+  margin-bottom: 2rem;
+}
+
+.card:first-of-type {
+  margin-top: 1rem;
+}
+
+button.card-footer-item {
+  @extend a;
+  background-color: inherit;
+  border: none;
+  font-size: inherit;
+}
+
+button.loading {
+  color: transparent !important;
+  pointer-events: none;
+  position: relative;
+
+  &::after {
+    @include loader;
+    @include center(1em);
+    position: absolute !important;
+  }
+}
