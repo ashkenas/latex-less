@@ -2,17 +2,6 @@ import { GraphQLError } from "graphql";
 import { addProjectEquation, addProjectResponse, getUser, getUserProject, newEquation, newProject, removeProjectEquation, removeProjectResponse, removeUserEquation, removeUserProject, stringify, updateEquation, updateProject } from "./data";
 import { getUserEquation } from "./data";
 
-const authorize = (user, ctx) => {
-  if (user === ctx.uid) return;
-
-  throw new GraphQLError('Unauthorized', {
-    extensions: {
-      code: 'UNAUTHORIZED',
-      http: { status: 403 }
-    }
-  });
-};
-
 const userProjects = async (_, _args, ctx) => {
   const user = await getUser(ctx.uid);
   return user.projects.map(stringify);
@@ -24,38 +13,12 @@ const userEquations = async (_, _args, ctx) => {
 };
 
 const project = async (_, { id }, ctx) => {
-  // const user = await getUser(ctx.uid);
-  // const projects = user.projects.map(stringify);
-  // const project = projects.find(e => e._id === id);
-  // if (!project) {
-  //   throw new GraphQLError('Project not found.', {
-  //     extensions: {
-  //       code: 'NOTFOUND',
-  //       http: { status: 404 }
-  //     }
-  //   });
-  // }
-  // return project;
-  const [user, res] = getUserProject(id);
-  authorize(user, ctx);
+  const res = getUserProject(ctx.uid, id);
   return stringify(res);
 };
 
 const equation = async (_, { id }, ctx) => {
-  // const user = await getUser(ctx.uid);
-  // const equations = user.equations.map(stringify);
-  // const equation = equations.find(e => e._id === id);
-  // if (!equation) {
-  //   throw new GraphQLError('Equation not found.', {
-  //     extensions: {
-  //       code: 'NOTFOUND',
-  //       http: { status: 404 }
-  //     }
-  //   });
-  // }
-  // return equation;
-  const [user, res] = getUserEquation(id);
-  authorize(user, ctx);
+  const res = getUserEquation(ctx.uid, id);
   return stringify(res);
 };
 

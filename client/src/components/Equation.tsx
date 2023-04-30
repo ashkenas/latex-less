@@ -7,7 +7,6 @@ export default function Equation({ equation }: any) {
   const [eq, setEq] = useState(equation.text);
   const [name, setName] = useState(equation.name);
   const [editing, setEditing] = useState(false);
-  console.log(equation.text,eq);
   const [updateEquation, { loading }] = useMutation(UPDATE_EQUATION, {
     onError: (e) => {
       console.error(e);

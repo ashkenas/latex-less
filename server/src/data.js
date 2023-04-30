@@ -46,9 +46,10 @@ export const getUser = async (uid) => {
   }
 };
 
-const getFromUserArray = async (array, id, name) => {
+const getFromUserArray = async (array, uid, id, name) => {
   const col = await users();
   const res = await col.findOne({
+    firebaseId: uid,
     [array]: {
       $elemMatch: {
         _id: new ObjectId(id)
@@ -66,12 +67,12 @@ const getFromUserArray = async (array, id, name) => {
   return res[array][0];
 }
 
-export const getUserEquation = async (id) => {
-  return await getFromUserArray('equations', id, 'Equation');
+export const getUserEquation = async (uid, id) => {
+  return await getFromUserArray('equations', uid, id, 'Equation');
 };
 
-export const getUserProject = async (id) => {
-  return await getFromUserArray('projects', id, 'Project');
+export const getUserProject = async (uid, id) => {
+  return await getFromUserArray('projects', uid, id, 'Project');
 };
 
 const getFromProjectArray = async (array, pid, id, name) => {
@@ -127,7 +128,7 @@ export const newProject = async (uid) => {
   if (!res.acknowledged || !res.modifiedCount)
     throw new GraphQLError('Failed to create new project.');
 
-  return await getUserProject(pid.toString())
+  return await getUserProject(uid, pid.toString())
 };
 
 export const newEquation = async (uid) => {
@@ -148,7 +149,7 @@ export const newEquation = async (uid) => {
   if (!res.acknowledged || !res.modifiedCount)
     throw new GraphQLError('Failed to create new equation.');
 
-  return await getUserEquation(eid.toString())
+  return await getUserEquation(uid, eid.toString())
 };
 
 export const updateEquation = async (uid, id, name, text) => {
@@ -173,7 +174,7 @@ export const updateEquation = async (uid, id, name, text) => {
   if (!res.acknowledged)
     throw new GraphQLError('Failed to update equation.');
   
-  return await getUserEquation(id);
+  return await getUserEquation(uid, id);
 };
 
 const addToProjectArray = async (uid, pid, array, name, text) => {
@@ -234,7 +235,7 @@ const removeFromProjectArray = async (uid, pid, id, array) => {
   if (!res.acknowledged)
     throw new GraphQLError(`Failed to remove ${t}.`);
 
-  return await getUserProject(pid);
+  return await getUserProject(uid, pid);
 };
 
 export const removeProjectEquation = async (uid, pid, id) => {
@@ -322,5 +323,5 @@ export const updateProject = async (uid, id, name, equations, responses) => {
     await updateInProjectArray(uid, id, e._id, "responses", e.name, e.text);
   }
 
-  return await getUserProject(id);
+  return await getUserProject(uid, id);
 };
