@@ -13,7 +13,7 @@ input NamedTextInput {
 type Project {
   _id: ID!
   name: String!
-  lastEdited: Int!
+  lastEdited: Float!
   equations: [NamedText!]!
   responses: [NamedText!]!
 }

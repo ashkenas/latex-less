@@ -40,7 +40,7 @@ const getFromUserArray = async (array, id, name) => {
   const res = await col.findOne({
     [array]: {
       $elemMatch: {
-        _id: ObjectId(id)
+        _id: new ObjectId(id)
       }
     }
   }, {
@@ -52,7 +52,7 @@ const getFromUserArray = async (array, id, name) => {
 
   if (!res) notFound(`${name} not found.`);
 
-  return [res.firebaseId, res[array][0]];
+  return res[array][0];
 }
 
 export const getUserEquation = async (id) => {
@@ -68,8 +68,8 @@ const getFromProjectArray = async (array, pid, id, name) => {
   const res = await col.findOne({
     projects: {
       $elemMatch: {
-        _id: ObjectId(pid),
-        [`${array}._id`]: ObjectId(id)
+        _id: new ObjectId(pid),
+        [`${array}._id`]: new ObjectId(id)
       }
     }
   }, {
@@ -77,7 +77,7 @@ const getFromProjectArray = async (array, pid, id, name) => {
       firebaseId: 1,
       [`projects.$.${array}`]: {
         $elemMatch: {
-          _id: ObjectId(id)
+          _id: new ObjectId(id)
         }
       }
     }
@@ -125,7 +125,7 @@ export const updateEquation = async (uid, id, name, text) => {
     firebaseId: uid,
     equations: {
       $elemMatch: {
-        _id: ObjectId(id)
+        _id: new ObjectId(id)
       }
     }
   }, {
@@ -150,7 +150,7 @@ const addToProjectArray = async (uid, pid, array, name, text) => {
     firebaseId: uid,
     projects: {
       $elemMatch: {
-        _id: ObjectId(pid)
+        _id: new ObjectId(pid)
       }
     }
   }, {
@@ -185,13 +185,13 @@ const removeFromProjectArray = async (uid, pid, id, array) => {
     firebaseId: uid,
     projects: {
       $elemMatch: {
-        _id: ObjectId(pid)
+        _id: new ObjectId(pid)
       }
     }
   }, {
     $pop: {
       [`projects.$.${array}`]: {
-        _id: ObjectId(id)
+        _id: new ObjectId(id)
       }
     }
   });
@@ -219,7 +219,7 @@ export const removeUserEquation = async (uid, id) => {
   }, {
     $pop: {
       equations: {
-        _id: ObjectId(id)
+        _id: new ObjectId(id)
       }
     }
   });
@@ -236,7 +236,7 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
     firebaseId: uid,
     projects: {
       $elemMatch: {
-        _id: ObjectId(pid)
+        _id: new ObjectId(pid)
       }
     }
   }, {
@@ -247,7 +247,7 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
       }
     }
   }, {
-    arrayFilters: [ { "e": { _id: ObjectId(id) } } ]
+    arrayFilters: [ { "e": { _id: new ObjectId(id) } } ]
   });
 
   if (!res.acknowledged)
@@ -261,7 +261,7 @@ export const updateProject = async (uid, id, name, equations, responses) => {
       firebaseId: uid,
       projects: {
         $elemMatch: {
-          _id: ObjectId(id)
+          _id: new ObjectId(id)
         }
       }
     }, {
