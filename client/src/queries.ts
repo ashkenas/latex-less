@@ -9,3 +9,10 @@ query GetProjects {
   }
 }
 `;
+
+export const NEW_PROJECT = gql`
+mutation NewProject {
+  newProject {
+    _id
+  }
+}`;
