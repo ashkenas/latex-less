@@ -1,6 +1,8 @@
 import { GET_PROJECTS, NEW_PROJECT } from '../queries';
 import { useMutation, useQuery } from '@apollo/client';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
+import '../styles/Projects.scss';
+import ProjectListing from './ProjectListing';
 
 export default function Projects() {
   const { data, loading, error } = useQuery(GET_PROJECTS);
@@ -15,19 +17,22 @@ export default function Projects() {
   const onClickNew = useCallback(() => {
     if (loadingNew) return;
     newProject();
-  }, [loadingNew]);
+  }, [newProject, loadingNew]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return (console.error(error), <p>Error.</p>);
 
+  const projects = data.userProjects.map((p: any) => {
+    return <ProjectListing key={p._id} project={p} />;
+  });
+
   return (<>
-    <button onClick={onClickNew}>New Project</button>
-    {data.userProjects.map((p: any) => (
-      <div key={p._id} className="project">
-        <h1>{p.name}</h1>
-        <time>{p.lastEdited}</time>
-      </div>
-    ))}
+    <div className="container">
+      <section className="section">
+        <button onClick={onClickNew}
+          className={`button${loadingNew ? ' loading' : ''}`}>New Project</button>
+        {projects}
+      </section>
+    </div>
   </>);
-  
 };

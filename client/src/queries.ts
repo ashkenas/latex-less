@@ -16,3 +16,10 @@ mutation NewProject {
     _id
   }
 }`;
+
+export const DEL_PROJECT = gql`
+mutation DelProject($id: ID!) {
+  removeProject(id: $id) {
+    _id
+  }
+}`;
