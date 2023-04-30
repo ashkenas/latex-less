@@ -283,7 +283,7 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
   }, {
     $set: {
       [`projects.$.${array}.$[e]`]: {
-        _id: new ObjectId(pid),
+        _id: new ObjectId(id),
         name: name,
         text: text
       }
