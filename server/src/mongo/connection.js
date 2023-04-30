@@ -1,7 +1,7 @@
-import { MongoClient, Db } from "mongodb";
+import { MongoClient } from "mongodb";
 
-let _connection: MongoClient;
-let _db: Db;
+let _connection;
+let _db;
 
 export const dbConnection = async () => {
   if (!_connection) {

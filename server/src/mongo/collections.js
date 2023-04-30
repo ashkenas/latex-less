@@ -1,14 +1,12 @@
-import { User } from "../typings/mongo";
 import { dbConnection } from "./connection";
-import { Collection } from "mongodb";
 
-const memoCollection = (collection: string) => {
-  let _col: Collection<User>;
+const memoCollection = (collection) => {
+  let _col;
 
   return async () => {
     if (!_col) {
       const db = await dbConnection();
-      _col = db.collection<User>(collection);
+      _col = db.collection(collection);
     }
 
     return _col;

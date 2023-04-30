@@ -11,18 +11,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc",
-    "start": "npm run compile && node --es-module-specifier-resolution=node ./dist/index.js",
-    "codegen": "graphql-codegen --config codegen.ts"
+    "start": "node --experimental-specifier-resolution=node src/index.js"
   },
   "author": "Jacob Ashkenas",
   "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@graphql-codegen/cli": "3.3.1",
-    "@graphql-codegen/typescript": "3.0.4",
-    "@graphql-codegen/typescript-resolvers": "3.2.1",
-    "@types/node": "^18.15.13",
-    "typescript": "^5.0.4"
-  }
+  "description": ""
 }

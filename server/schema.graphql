@@ -26,15 +26,15 @@ type User {
 }
 
 type Query {
-  userProjects(): [Project!]!
-  userEquations(): [NamedText!]!
+  userProjects: [Project!]!
+  userEquations: [NamedText!]!
   project(id: ID!): Project!
   equation(id: ID!): NamedText!
   projectEquation(pid: ID!, eid: ID!): NamedText!
 }
 
 type Mutation {
-  newProject(): Project!
+  newProject: Project!
   updateProject(id: ID!, name: String, equations: [NamedTextInput], responses: [NamedTextInput]): Project!
   updateEquation(id: ID!, name: String!, text: String!): NamedText!
   addProjectEquation(id: ID!): NamedText!

@@ -44,7 +44,7 @@ const getFromUserArray = async (array, id, name) => {
       }
     }
   }, {
-    project: {
+    projection: {
       firebaseId: 1,
       [`${array}.$`]: 1
     }
@@ -73,7 +73,7 @@ const getFromProjectArray = async (array, pid, id, name) => {
       }
     }
   }, {
-    project: {
+    projection: {
       firebaseId: 1,
       [`projects.$.${array}`]: {
         $elemMatch: {
