@@ -19,7 +19,7 @@ mutation NewProject {
 
 export const DEL_PROJECT = gql`
 mutation DelProject($id: ID!) {
-  removeProject(id: $id) {
+  removeUserProject(id: $id) {
     _id
   }
 }`;

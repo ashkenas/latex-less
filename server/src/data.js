@@ -12,7 +12,18 @@ const notFound = (msg) => {
 };
 
 export const stringify = (document) => {
-  return { ...document, _id: document._id.toString() };
+  if (typeof document !== 'object') return document;
+  const stringDoc = {};
+  for (const key in document) {
+    if (key === '_id')
+      stringDoc[key] = document[key].toString();
+    else if (typeof document[key] === 'object') {
+      if (Array.isArray(document[key]))
+        stringDoc[key] = document[key].map(stringify);
+      else stringDoc[key] = stringify(document[key]);
+    } else stringDoc[key] = document[key];
+  }
+  return stringDoc;
 };
 
 export const getUser = async (uid) => {
@@ -119,6 +130,27 @@ export const newProject = async (uid) => {
   return await getUserProject(pid.toString())
 };
 
+export const newEquation = async (uid) => {
+  const col = await users();
+  const eid = new ObjectId();
+  const res = await col.updateOne({
+    firebaseId: uid
+  }, {
+    $push: {
+      equations: {
+        _id: eid,
+        name: 'New Equation',
+        text: 'y=x^2+5'
+      }
+    }
+  });
+
+  if (!res.acknowledged || !res.modifiedCount)
+    throw new GraphQLError('Failed to create new equation.');
+
+  return await getUserEquation(eid.toString())
+};
+
 export const updateEquation = async (uid, id, name, text) => {
   const col = await users();
   const res = await col.updateOne({
@@ -189,7 +221,7 @@ const removeFromProjectArray = async (uid, pid, id, array) => {
       }
     }
   }, {
-    $pop: {
+    $pull: {
       [`projects.$.${array}`]: {
         _id: new ObjectId(id)
       }
@@ -212,22 +244,30 @@ export const removeProjectResponse = async (uid, pid, id) => {
   return await removeFromProjectArray(uid, pid, id, 'responses');
 };
 
-export const removeUserEquation = async (uid, id) => {
+export const removeFromUserArray = async (uid, id, array) => {
   const col = await users();
   const res = await col.updateOne({
     firebaseId: uid
   }, {
-    $pop: {
-      equations: {
+    $pull: {
+      [array]: {
         _id: new ObjectId(id)
       }
     }
   });
 
   if (!res.acknowledged)
-    throw new GraphQLError('Failed to remove user equation.');
+    throw new GraphQLError(`Failed to delete user ${array.substring(0, array.length - 1)}.`);
 
   return await getUser(uid);
+};
+
+export const removeUserEquation = async (uid, id) => {
+  return await removeFromUserArray(uid, id, 'equations');
+};
+
+export const removeUserProject = async (uid, id) => {
+  return await removeFromUserArray(uid, id, 'projects');
 };
 
 const updateInProjectArray = async (uid, pid, id, array, name, text) => {

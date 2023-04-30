@@ -10,14 +10,15 @@ export default function ProjectListing({ project }: any) {
       console.error(e);
       alert('Failed to delete project. Please try again in a moment.');
     },
+    variables: { id: project._id },
     refetchQueries: ['GetProjects']
   });
 
   const onClickDel = useCallback(() => {
     if (loading) return;
     if (confirm('Are you sure you want to delete this project?'))
-      deleteProject({ variables: { id: project.id } });
-  }, [deleteProject, project, loading]);
+      deleteProject();
+  }, [deleteProject, loading]);
 
   return (
     <div className="card">
