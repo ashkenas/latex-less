@@ -97,7 +97,7 @@ const getFromProjectArray = async (array, pid, id, name) => {
 
   if (!res) notFound(`${name} not found.`);
 
-  return [res.firebaseId, res.projects[0][array][0]];
+  return res.projects[0][array][0];
 };
 
 export const getProjectEquation = async (pid, id) => {
