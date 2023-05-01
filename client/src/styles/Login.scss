@@ -1,0 +1,23 @@
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/elements/title.sass";
+@import "bulma/sass/layout/section.sass";
+@import "bulma/sass/elements/container.sass";
+
+@mixin press-btn {
+    transition: .5s transform;
+    &:hover {
+        transform: translateY(1px) scale(.99);
+    }
+    &:active {
+        transform: translateY(3px) scale(.97);
+    }
+}
+
+.google-btn {
+    @include press-btn();
+    width: 15rem;
+    border: none;
+    padding: 0;
+    background: white;
+}

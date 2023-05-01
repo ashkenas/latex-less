@@ -1,14 +1,19 @@
-import { GoogleAuthProvider } from "firebase/auth";
-import { StyledFirebaseAuth } from "react-firebaseui";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import auth from "../firebase/Firebase";
+import "../styles/Login.scss";
 
-const config = {
-  signInFlow: 'popup',
-  signInOptions: [
-    GoogleAuthProvider.PROVIDER_ID
-  ]
-};
+const gProvider = new GoogleAuthProvider();
+
 
 export default function Login() {
-  return <StyledFirebaseAuth uiConfig={config} firebaseAuth={auth} />;
+  
+  return (
+    <section className="section">
+      <div className="container">
+        <button className="google-btn" onClick={() => signInWithPopup(auth, gProvider)}>
+          <img src="/img/btn_google_signin_light_normal_web@2x.png" alt="Google sign-in"/>
+        </button>
+      </div>
+    </section>
+  );
 };
