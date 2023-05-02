@@ -54,3 +54,23 @@ mutation UpdateEquation($id: ID!, $name: String!, $text: String!) {
     _id
   }
 }`
+
+export const GET_PROJECT = gql`
+query GetProject($id: ID!) {
+  project(id: $id) {
+    _id
+    name
+    lastEdited
+    equations {
+      _id
+      name
+      text
+    }
+    responses {
+      _id
+      name
+      text
+    }
+  }
+}
+`;

@@ -13,12 +13,12 @@ const userEquations = async (_, _args, ctx) => {
 };
 
 const project = async (_, { id }, ctx) => {
-  const res = getUserProject(ctx.uid, id);
+  const res = await getUserProject(ctx.uid, id);
   return stringify(res);
 };
 
 const equation = async (_, { id }, ctx) => {
-  const res = getUserEquation(ctx.uid, id);
+  const res = await getUserEquation(ctx.uid, id);
   return stringify(res);
 };
 
