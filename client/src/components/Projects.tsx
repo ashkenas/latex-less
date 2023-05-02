@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useCallback } from 'react';
 import '../styles/Projects.scss';
 import ProjectListing from './ProjectListing';
+import WaitForData from './WaitForData';
 
 export default function Projects() {
   const { data, loading, error } = useQuery(GET_PROJECTS);
@@ -19,8 +20,8 @@ export default function Projects() {
     newProject();
   }, [newProject, loadingNew]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return (console.error(error), <p>Error.</p>);
+  if (loading || error)
+    return <WaitForData loading={loading} error={error} />;
 
   const projects = data.userProjects.map((p: any) => {
     return <ProjectListing key={p._id} project={p} />;

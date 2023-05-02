@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useCallback } from 'react';
 import '../styles/Equations.scss';
 import Equation from './Equation';
+import WaitForData from './WaitForData';
 
 export default function Equations() {
   const { data, loading, error } = useQuery(GET_EQUATIONS);
@@ -19,8 +20,8 @@ export default function Equations() {
     newEquation();
   }, [newEquation, loadingNew]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return (console.error(error), <p>Error.</p>);
+  if (loading || error)
+    return <WaitForData loading={loading} error={error} />;
 
   const projects = data.userEquations.map((e: any) => {
     return <Equation key={e._id} equation={e} />;
