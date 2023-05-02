@@ -21,8 +21,8 @@ query GetEquations {
 `;
 
 export const NEW_PROJECT = gql`
-mutation NewProject {
-  newProject {
+mutation NewProject($name: String, $text: String) {
+  newProject(name: $name, text: $text) {
     _id
   }
 }`;
@@ -58,6 +58,26 @@ mutation UpdateEquation($id: ID!, $name: String!, $text: String!) {
 export const GET_PROJECT = gql`
 query GetProject($id: ID!) {
   project(id: $id) {
+    _id
+    name
+    lastEdited
+    equations {
+      _id
+      name
+      text
+    }
+    responses {
+      _id
+      name
+      text
+    }
+  }
+}
+`;
+
+export const UPDATE_PROJECT = gql`
+mutation UpdateProject($id: ID!, $name: String, $equations: [NamedTextInput], $responses: [NamedTextInput] ) {
+  updateProject(id: $id, name: $name, equations: $equations, responses: $responses) {
     _id
     name
     lastEdited

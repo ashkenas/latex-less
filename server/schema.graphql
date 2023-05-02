@@ -35,7 +35,7 @@ type Query {
 
 type Mutation {
   newProject: Project!
-  newEquation: NamedText!
+  newEquation(name: String, text: String): NamedText!
   updateProject(id: ID!, name: String, equations: [NamedTextInput], responses: [NamedTextInput]): Project!
   updateEquation(id: ID!, name: String!, text: String!): NamedText!
   addProjectEquation(id: ID!): NamedText!

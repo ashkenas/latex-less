@@ -131,7 +131,7 @@ export const newProject = async (uid) => {
   return await getUserProject(uid, pid.toString())
 };
 
-export const newEquation = async (uid) => {
+export const newEquation = async (uid, name, text) => {
   const col = await users();
   const eid = new ObjectId();
   const res = await col.updateOne({
@@ -140,8 +140,8 @@ export const newEquation = async (uid) => {
     $push: {
       equations: {
         _id: eid,
-        name: 'New Equation',
-        text: 'y=x^2+5'
+        name: name || 'New Equation',
+        text: text || 'y=x^2+5'
       }
     }
   });
