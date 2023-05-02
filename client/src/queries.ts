@@ -21,8 +21,8 @@ query GetEquations {
 `;
 
 export const NEW_PROJECT = gql`
-mutation NewProject($name: String, $text: String) {
-  newProject(name: $name, text: $text) {
+mutation NewProject {
+  newProject {
     _id
   }
 }`;
@@ -91,6 +91,38 @@ mutation UpdateProject($id: ID!, $name: String, $equations: [NamedTextInput], $r
       name
       text
     }
+  }
+}
+`;
+
+export const ADD_EQUATION = gql`
+mutation AddEquation($id: ID!, $name: String, $text: String) {
+  addProjectEquation(id: $id, name: $name, text: $text) {
+    _id
+  }
+}
+`;
+
+export const ADD_RESPONSE = gql`
+mutation addResponse($id: ID!) {
+  addProjectResponse(id: $id) {
+    _id
+  }
+}
+`;
+
+export const REM_EQUATION = gql`
+mutation RemEquation($pid: ID!, $id: ID!) {
+  removeProjectEquation(pid: $pid, id: $id) {
+    _id
+  }
+}
+`;
+
+export const REM_RESPONSE = gql`
+mutation RemResponse($pid: ID!, $id: ID!) {
+  removeProjectResponse(pid: $pid, id: $id) {
+    _id
   }
 }
 `;

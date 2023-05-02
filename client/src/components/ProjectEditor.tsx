@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { GET_PROJECT, UPDATE_PROJECT } from '../queries';
+import { ADD_EQUATION, GET_PROJECT, UPDATE_PROJECT } from '../queries';
 import '../styles/Project.css';
 import { NamedText } from '../typings/gql';
 import ProjectEquation from './ProjectEquation';
@@ -39,7 +39,24 @@ const ProjectEditor: React.FC = () => {
     },
     refetchQueries: ['GetProject']
   });
+  const [newEquation, { loading: loadingNewEq }] = useMutation(ADD_EQUATION, {
+    onError: (e) => {
+      console.error(e);
+      alert('Failed to make new equation. Please try again in a moment.');
+    },
+    variables: { id: id },
+    refetchQueries: ['GetProject']
+  });
 
+  const onClickSave = useCallback(() => {
+    if (loadingUpdate) return;
+    updateProject();
+  }, [updateProject, loadingUpdate]);
+
+  const onClickNewEq = useCallback(() => {
+    if (loadingNewEq) return;
+    newEquation();
+  }, [newEquation, loadingNewEq]);
 
   if (loading || error)
     return <WaitForData loading={loading} error={error} />;
@@ -59,11 +76,12 @@ const ProjectEditor: React.FC = () => {
         </div>
         <div className="level-item">
           <button className={`button${loadingUpdate ? ' is-loading' : ''}`}
-            onClick={() => updateProject()}>Save</button>
+            onClick={onClickSave}>Save</button>
         </div>
       </div>
       <div className="columns">
         <div className="column">
+          <button className={`button${loadingNewEq ? ' is-loading' : ''}`} onClick={onClickNewEq}>New Equation</button>
           {data.project.equations.map((e: NamedText) =>
             <ProjectEquation key={e._id} equation={e} pid={id} collector={eCollector} />)}
         </div>

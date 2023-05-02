@@ -86,18 +86,13 @@ const getFromProjectArray = async (array, pid, id, name) => {
     }
   }, {
     projection: {
-      firebaseId: 1,
-      [`projects.$.${array}`]: {
-        $elemMatch: {
-          _id: new ObjectId(id)
-        }
-      }
+      'projects.$': 1
     }
   });
 
   if (!res) notFound(`${name} not found.`);
 
-  return res.projects[0][array][0];
+  return res.projects[0][array].find(e => e._id.toString() === id);
 };
 
 export const getProjectEquation = async (pid, id) => {
@@ -119,7 +114,7 @@ export const newProject = async (uid) => {
         _id: pid,
         name: 'New Project',
         lastEdited: Date.now(),
-        equations: [],
+        equations: (await getUser(uid)).equations,
         responses: []
       }
     }
@@ -131,7 +126,7 @@ export const newProject = async (uid) => {
   return await getUserProject(uid, pid.toString())
 };
 
-export const newEquation = async (uid, name, text) => {
+export const newEquation = async (uid) => {
   const col = await users();
   const eid = new ObjectId();
   const res = await col.updateOne({
@@ -140,8 +135,8 @@ export const newEquation = async (uid, name, text) => {
     $push: {
       equations: {
         _id: eid,
-        name: name || 'New Equation',
-        text: text || 'y=x^2+5'
+        name: 'New Equation',
+        text: 'y=x^2+5'
       }
     }
   });
@@ -188,6 +183,9 @@ const addToProjectArray = async (uid, pid, array, name, text) => {
       }
     }
   }, {
+    $set: {
+      "projects.$.lastEdited": Date.now(),
+    },
     $push: {
       [`projects.$.${array}`]: {
         _id: id,
@@ -205,8 +203,14 @@ const addToProjectArray = async (uid, pid, array, name, text) => {
   return await getFromProjectArray(array, pid, id.toString(), t[0].toUpperCase() + t.substring(1));
 };
 
-export const addProjectEquation = async (uid, pid) => {
-  return await addToProjectArray(uid, pid, 'equations', 'New Equation', 'y=x^2+5');
+export const addProjectEquation = async (uid, pid, name, text) => {
+  return await addToProjectArray(
+    uid,
+    pid,
+    'equations',
+    name || 'New Equation',
+    text|| 'y=x^2+5'
+  );
 };
 
 export const addProjectResponse = async (uid, pid) => {
@@ -223,6 +227,9 @@ const removeFromProjectArray = async (uid, pid, id, array) => {
       }
     }
   }, {
+    $set: {
+      "projects.$.lastEdited": Date.now(),
+    },
     $pull: {
       [`projects.$.${array}`]: {
         _id: new ObjectId(id)
@@ -283,6 +290,7 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
     }
   }, {
     $set: {
+      "projects.$.lastEdited": Date.now(),
       [`projects.$.${array}.$[e]`]: {
         _id: new ObjectId(id),
         name: name,
@@ -290,7 +298,7 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
       }
     }
   }, {
-    arrayFilters: [ { "e": { _id: new ObjectId(id) } } ]
+    arrayFilters: [ { "e._id": new ObjectId(id) } ]
   });
 
   if (!res.acknowledged)
@@ -308,7 +316,10 @@ export const updateProject = async (uid, id, name, equations, responses) => {
         }
       }
     }, {
-      $set: { "projects.$.name": name }
+      $set: {
+        "projects.$.lastEdited": Date.now(),
+        "projects.$.name": name
+      }
     });
   
     if (!res.acknowledged)

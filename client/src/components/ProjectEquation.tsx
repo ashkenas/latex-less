@@ -1,16 +1,16 @@
 import { useMutation } from '@apollo/client';
 import EquationEditor from 'equation-editor-react';
 import { useCallback, useState } from 'react';
-import { DEL_EQUATION, NEW_EQUATION, UPDATE_PROJECT } from '../queries';
+import { ADD_EQUATION, UPDATE_PROJECT, REM_EQUATION } from '../queries';
 import { NamedText } from '../typings/gql';
 
-type ProjectEquation = React.FC<{
+type ProjectEquationProps = {
   equation: NamedText,
   pid: string | undefined,
   collector: (_id: string, name: string, text: string) => void
-}>;
+};
 
-const ProjectEquation: ProjectEquation = ({ equation, pid, collector }) => {
+const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collector }) => {
   const [eq, setEq] = useState(equation.text);
   const [name, setName] = useState(equation.name);
   collector(equation._id, name, eq);
@@ -29,26 +29,27 @@ const ProjectEquation: ProjectEquation = ({ equation, pid, collector }) => {
         text: eq
       }]
     },
-    refetchQueries: ['GetProjectEquations']
+    refetchQueries: ['GetProject']
   });
-  const [deleteEquation, { loading: loadingDel }] = useMutation(DEL_EQUATION, {
+  const [deleteEquation, { loading: loadingDel }] = useMutation(REM_EQUATION, {
     onError: (e) => {
       console.error(e);
       alert('Failed to delete equation. Please try again in a moment.');
     },
-    variables: { id: equation._id },
-    refetchQueries: ['GetProjectEquations']
+    variables: { pid: pid, id: equation._id },
+    refetchQueries: ['GetProject']
   });
-  const [duplicate, { loading: loadingDup }] = useMutation(NEW_EQUATION, {
+  const [duplicate, { loading: loadingDup }] = useMutation(ADD_EQUATION, {
     onError: (e) => {
       console.error(e);
       alert('Failed to duplicate equation. Please try again in a moment.');
     },
     variables: {
+      id: pid,
       name: name,
       text: eq
     },
-    refetchQueries: ['GetProjectEquations']
+    refetchQueries: ['GetProject']
   });
 
   const onClickDel = useCallback(() => {

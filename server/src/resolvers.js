@@ -35,10 +35,10 @@ const Resolvers = {
   },
   Mutation: {
     newProject: (_, __, ctx) => resolve(newProject(ctx.uid)),
-    newEquation: (_, args, ctx) => resolve(newEquation(ctx.uid, args.name, args.text)),
+    newEquation: (_, __, ctx) => resolve(newEquation(ctx.uid)),
     updateProject: (_, args, ctx) => resolve(updateProject(ctx.uid, args.id, args.name, args.equations, args.responses)),
     updateEquation: (_, args, ctx) => resolve(updateEquation(ctx.uid, args.id, args.name, args.text)),
-    addProjectEquation: (_, args, ctx) => resolve(addProjectEquation(ctx.uid, args.id)),
+    addProjectEquation: (_, args, ctx) => resolve(addProjectEquation(ctx.uid, args.id, args.name, args.text)),
     addProjectResponse: (_, args, ctx) => resolve(addProjectResponse(ctx.uid, args.id)),
     removeProjectEquation: (_, args, ctx) => resolve(removeProjectEquation(ctx.uid, args.pid, args.id)),
     removeProjectResponse: (_, args, ctx) => resolve(removeProjectResponse(ctx.uid, args.pid, args.id)),
