@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import EquationEditor from 'equation-editor-react';
 import { Dispatch, useCallback, useEffect, useState } from 'react';
-import { ADD_EQUATION, UPDATE_PROJECT, REM_EQUATION } from '../queries';
+import { ADD_EQUATION, REM_EQUATION } from '../queries';
 import { NamedText } from '../typings/gql';
 import { DirtyDataDispatchAction } from './ProjectEditor';
 
@@ -14,7 +14,7 @@ type ProjectEquationProps = {
 const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, dispatch }) => {
   const [eq, setEq] = useState(equation.text);
   const [name, setName] = useState(equation.name);
-  const [editing, _setEditing] = useState(true);
+  const [editing, ] = useState(true);
   // const [updateEquation, { loading }] = useMutation(UPDATE_PROJECT, {
   //   onError: (e) => {
   //     console.error(e);
@@ -75,7 +75,7 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, dispat
         type: 'equation',
         data: { _id: equation._id, name, text: eq }
       });
-  }, [eq, name, dirty]);
+  }, [eq, name, dirty, dispatch, equation._id]);
 
   return (
     <div className="card">

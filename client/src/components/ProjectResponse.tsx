@@ -35,7 +35,7 @@ const ProjectResponse: React.FC<ProjectResponseProps> = ({ response, pid, dispat
         type: 'response',
         data: { _id: response._id, name, text: res }
     });
-  }, [res, name]);
+  }, [res, name, dispatch, response]);
 
   return (<>
     <label className="label" htmlFor={`qn${response._id}`}>Question Name</label>

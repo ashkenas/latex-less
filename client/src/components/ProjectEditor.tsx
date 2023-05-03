@@ -128,32 +128,34 @@ const ProjectEditor: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="level">
-        <div className="level-item">
-          <h1 className="title">
-            {renaming
-            ? <input type="text" onChange={(e) => setName(e.target.value)} value={name} />
-            : name }
-          </h1>
+      <section className="section">
+        <div className="level">
+          <div className="level-item">
+            <h1 className="title">
+              {renaming
+              ? <input type="text" onChange={(e) => setName(e.target.value)} value={name} />
+              : name }
+            </h1>
+          </div>
         </div>
-      </div>
-      <div className="level">
-        <div className="level-item">
-          <button className="button" onClick={() => setRenaming(true)}>Rename</button>
-          <button className={`button${loadingUpdate ? ' is-loading' : ''}${dirty ? ' is-link' : ''}`}
-            onClick={onClickSave}>Save</button>
+        <div className="level">
+          <div className="level-item">
+            <button className="button" onClick={() => setRenaming(true)}>Rename</button>
+            <button className={`button${loadingUpdate ? ' is-loading' : ''}${dirty ? ' is-link' : ''}`}
+              onClick={onClickSave}>Save</button>
+          </div>
         </div>
-      </div>
-      <div className="columns">
-        <div className="column">
-          <button className={`button${loadingNewEq ? ' is-loading' : ''}`} onClick={onClickNewEq}>New Equation</button>
-          {equationComps}
+        <div className="columns">
+          <div className="column">
+            <button className={`button${loadingNewEq ? ' is-loading' : ''}`} onClick={onClickNewEq}>New Equation</button>
+            {equationComps}
+          </div>
+          <div className="column">
+            <button className={`button${loadingNewRes ? ' is-loading' : ''}`} onClick={onClickNewRes}>New Response</button>
+            {responseComps}
+          </div>
         </div>
-        <div className="column">
-          <button className={`button${loadingNewRes ? ' is-loading' : ''}`} onClick={onClickNewRes}>New Response</button>
-          {responseComps}
-        </div>
-      </div>
+      </section>
     </div>
   );
 };
