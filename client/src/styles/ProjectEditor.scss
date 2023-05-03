@@ -1,0 +1,20 @@
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/components/card.sass";
+@import "bulma/sass/elements/title.sass";
+@import "bulma/sass/grid/columns.sass";
+@import "bulma/sass/elements/container.sass";
+@import "bulma/sass/elements/button.sass";
+@import "bulma/sass/form/_all.sass";
+
+.level:first-child {
+  margin-top: 1rem;
+}
+
+.level button:first-child {
+  margin-right: 1rem;
+}
+
+textarea {
+  height: auto !important;
+}

@@ -1,19 +1,19 @@
 import { useMutation } from '@apollo/client';
 import EquationEditor from 'equation-editor-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ADD_EQUATION, UPDATE_PROJECT, REM_EQUATION } from '../queries';
 import { NamedText } from '../typings/gql';
 
 type ProjectEquationProps = {
   equation: NamedText,
-  pid: string | undefined,
-  collector: (_id: string, name: string, text: string) => void
+  pid?: string,
+  collector: (obj: NamedText) => void,
+  isDirty: React.Dispatch<boolean>
 };
 
-const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collector }) => {
+const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collector, isDirty }) => {
   const [eq, setEq] = useState(equation.text);
   const [name, setName] = useState(equation.name);
-  collector(equation._id, name, eq);
   const [editing, setEditing] = useState(false);
   const [updateEquation, { loading }] = useMutation(UPDATE_PROJECT, {
     onError: (e) => {
@@ -68,6 +68,12 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collec
     updateEquation();
   }, [updateEquation, loading]);
 
+  const dirty = equation.text !== eq || equation.name !== name;
+  useEffect(() => {
+    isDirty(dirty);
+    collector({ _id: equation._id, name, text: eq });
+  });
+
   return (
     <div className="card">
       <header className="card-header">
@@ -75,7 +81,7 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collec
           { editing
           ? <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
           : name }
-          {(equation.text !== eq || equation.name !== name) && '*'}
+          {dirty && '*'}
         </></p>
       </header>
       <div className="card-content">
