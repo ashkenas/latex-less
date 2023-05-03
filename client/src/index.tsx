@@ -5,7 +5,24 @@ import { AuthProvider } from './firebase/Auth';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import auth from './firebase/Firebase';
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import Equations from './components/Equations';
+import ProjectEditor from './components/ProjectEditor';
+import Projects from './components/Projects';
+import Home from './components/Home';
+import ErrorPage from './components/ErrorPage';
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App />}>
+      <Route path="/" element={<Home />} />
+      <Route path="/equations" element={<Equations />} />
+      <Route path="/projects" element={<Projects />} />
+      <Route path="/projects/:id" element={<ProjectEditor />} />
+      <Route path="*" element={<ErrorPage code={404} message='Page not found.' />} />
+    </Route>
+  )
+)
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/',
@@ -34,7 +51,7 @@ root.render(
   // <React.StrictMode>
     <ApolloProvider client={client}>
       <AuthProvider>
-        <App />
+        <RouterProvider router={router} />
       </AuthProvider>
     </ApolloProvider>
   // </React.StrictMode>

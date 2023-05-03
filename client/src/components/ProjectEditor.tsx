@@ -57,10 +57,10 @@ const ProjectEditor: React.FC = () => {
   const dirty = name !== data?.project.name
     || dirtyData.equations.length > 0
     || dirtyData.responses.length > 0;
-  // unstable_usePrompt({
-  //   when: dirty,
-  //   message: 'You have unsaved changes. Are you sure you want to go?'
-  // });
+  unstable_usePrompt({
+    when: dirty,
+    message: 'You have unsaved changes. Are you sure you want to go?'
+  });
   const [updateProject, { loading: loadingUpdate }] = useMutation(UPDATE_PROJECT, {
     onError: (e) => {
       console.error(e);
