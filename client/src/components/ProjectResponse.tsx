@@ -1,16 +1,16 @@
 import { useMutation } from '@apollo/client';
-import { useCallback, useEffect, useState } from 'react';
+import { Dispatch, useCallback, useEffect, useState } from 'react';
 import { REM_RESPONSE } from '../queries';
 import { NamedText } from '../typings/gql';
+import { DirtyDataDispatchAction } from './ProjectEditor';
 
 type ProjectResponseProps = {
   response: NamedText,
   pid?: string,
-  collector: (obj: NamedText) => void,
-  isDirty: React.Dispatch<boolean>
+  dispatch: Dispatch<DirtyDataDispatchAction>
 };
 
-const ProjectResponse: React.FC<ProjectResponseProps> = ({ response, pid, collector, isDirty }) => {
+const ProjectResponse: React.FC<ProjectResponseProps> = ({ response, pid, dispatch }) => {
   const [res, setRes] = useState(response.text);
   const [name, setName] = useState(response.name);
   const [deleteResponse, { loading: loadingDel }] = useMutation(REM_RESPONSE, {
@@ -28,11 +28,14 @@ const ProjectResponse: React.FC<ProjectResponseProps> = ({ response, pid, collec
       deleteResponse();
   }, [deleteResponse, loadingDel]);
 
-  const dirty = res !== response.text || name !== response.name;
   useEffect(() => {
-    isDirty(dirty);
-    collector({ _id: response._id, name, text: res });
-  });
+    const dirty = res !== response.text || name !== response.name;
+    if (dirty)
+      dispatch({
+        type: 'response',
+        data: { _id: response._id, name, text: res }
+    });
+  }, [res, name]);
 
   return (<>
     <label className="label" htmlFor={`qn${response._id}`}>Question Name</label>
@@ -48,8 +51,8 @@ const ProjectResponse: React.FC<ProjectResponseProps> = ({ response, pid, collec
     <div className="field">
       <label className="label" htmlFor={`qr${response._id}`}>Question Response</label>
       <div className="control">
-        <textarea className="input" value={res} rows={5} onChange={(e) => setRes(e.target.value)}
-          id={`qr${response._id}`}></textarea>
+        <textarea className="input" value={res} rows={5} id={`qr${response._id}`}
+          onChange={(e) => setRes(e.target.value)}></textarea>
       </div>
     </div>
   </>);

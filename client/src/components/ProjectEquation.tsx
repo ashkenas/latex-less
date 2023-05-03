@@ -1,36 +1,36 @@
 import { useMutation } from '@apollo/client';
 import EquationEditor from 'equation-editor-react';
-import { useCallback, useEffect, useState } from 'react';
+import { Dispatch, useCallback, useEffect, useState } from 'react';
 import { ADD_EQUATION, UPDATE_PROJECT, REM_EQUATION } from '../queries';
 import { NamedText } from '../typings/gql';
+import { DirtyDataDispatchAction } from './ProjectEditor';
 
 type ProjectEquationProps = {
   equation: NamedText,
   pid?: string,
-  collector: (obj: NamedText) => void,
-  isDirty: React.Dispatch<boolean>
+  dispatch: Dispatch<DirtyDataDispatchAction>
 };
 
-const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collector, isDirty }) => {
+const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, dispatch }) => {
   const [eq, setEq] = useState(equation.text);
   const [name, setName] = useState(equation.name);
-  const [editing, setEditing] = useState(false);
-  const [updateEquation, { loading }] = useMutation(UPDATE_PROJECT, {
-    onError: (e) => {
-      console.error(e);
-      alert('Failed to save equation. Please try again in a moment.');
-    },
-    onCompleted: () => setEditing(false),
-    variables: {
-      id: pid,
-      equations: [{
-        _id: equation._id,
-        name: name,
-        text: eq
-      }]
-    },
-    refetchQueries: ['GetProject']
-  });
+  const [editing, _setEditing] = useState(true);
+  // const [updateEquation, { loading }] = useMutation(UPDATE_PROJECT, {
+  //   onError: (e) => {
+  //     console.error(e);
+  //     alert('Failed to save equation. Please try again in a moment.');
+  //   },
+  //   onCompleted: () => setEditing(false),
+  //   variables: {
+  //     id: pid,
+  //     equations: [{
+  //       _id: equation._id,
+  //       name: name,
+  //       text: eq
+  //     }]
+  //   },
+  //   refetchQueries: ['GetProject']
+  // });
   const [deleteEquation, { loading: loadingDel }] = useMutation(REM_EQUATION, {
     onError: (e) => {
       console.error(e);
@@ -63,16 +63,19 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collec
     duplicate();
   }, [duplicate, loadingDup]);
 
-  const onClickSave = useCallback(() => {
-    if (loading) return;
-    updateEquation();
-  }, [updateEquation, loading]);
+  // const onClickSave = useCallback(() => {
+  //   if (loading) return;
+  //   updateEquation();
+  // }, [updateEquation, loading]);
 
   const dirty = equation.text !== eq || equation.name !== name;
   useEffect(() => {
-    isDirty(dirty);
-    collector({ _id: equation._id, name, text: eq });
-  });
+    if (dirty)
+      dispatch({
+        type: 'equation',
+        data: { _id: equation._id, name, text: eq }
+      });
+  }, [eq, name, dirty]);
 
   return (
     <div className="card">
@@ -93,10 +96,10 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, collec
         />
       </div>
       <footer className="card-footer">
-        <button onClick={onClickSave}
-          className={`card-footer-item${loading ? ' loading' : ''}`}>Save</button>
-        <button onClick={() => setEditing(true)}
-          className={`card-footer-item`}>Rename</button>
+        {/* <button onClick={onClickSave}
+          className={`card-footer-item${loading ? ' loading' : ''}`}>Save</button> */}
+        {/* <button onClick={() => setEditing(true)}
+          className={`card-footer-item`}>Rename</button> */}
           <button onClick={onClickDup}
             className={`card-footer-item${loadingDup ? ' loading' : ''}`}>Duplicate</button>
         <button onClick={onClickDel}

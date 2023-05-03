@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { AnyMxRecord } from 'dns';
-import { useCallback, useEffect, useReducer, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
+import { unstable_usePrompt, useParams } from 'react-router-dom';
 import { ADD_EQUATION, ADD_RESPONSE, GET_PROJECT, UPDATE_PROJECT } from '../queries';
 import '../styles/ProjectEditor.scss';
 import { NamedText } from '../typings/gql';
@@ -9,16 +8,44 @@ import ProjectEquation from './ProjectEquation';
 import ProjectResponse from './ProjectResponse';
 import WaitForData from './WaitForData';
 
-const objReducer = (state: any, obj: NamedText) =>
-  ({ ...state, [obj._id]: obj });
+type DirtyData = {
+  equations: NamedText[],
+  responses: NamedText[]
+};
+
+export type DirtyDataDispatchAction = {
+  type: string,
+  data?: NamedText
+};
+
+const dirtyDataReducer = (state: DirtyData, action: DirtyDataDispatchAction) => {
+  if (action.type === 'equation') {
+    const newState = { ...state };
+    const idx = newState.equations.findIndex(d => d._id === action.data?._id);
+    if (idx >= 0) newState.equations[idx] = action.data as NamedText;
+    else newState.equations.push(action.data as NamedText);
+    return newState;
+  } else if (action.type === 'response') {
+    const newState = { ...state };
+    const idx = newState.responses.findIndex(d => d._id === action.data?._id);
+    if (idx >= 0) newState.responses[idx] = action.data as NamedText;
+    else newState.responses.push(action.data as NamedText);
+    return newState;
+  } else if (action.type === 'reset') {
+    return { equations: [], responses: [] };
+  } else {
+    console.log(`Unknown action '${action.type}' dispatched.`);
+    return { ...state };
+  }
+};
 
 const ProjectEditor: React.FC = () => {
   const [renaming, setRenaming] = useState(false)
   const [name, setName] = useState('');
-  const [equations, eCollector] = useReducer(objReducer, {});
-  const [responses, rCollector] = useReducer(objReducer, {});
-  const [dirty, setDirty] = useReducer((isDirty: boolean, dirty?: boolean) =>
-    dirty === undefined ? false : isDirty || dirty, false);
+  const [dirtyData, dispatch] = useReducer(dirtyDataReducer, {
+    equations: [],
+    responses: []
+  });
   const { id } = useParams();
   const { data, loading, error } = useQuery(GET_PROJECT, {
     onCompleted: (d) => {
@@ -27,17 +54,24 @@ const ProjectEditor: React.FC = () => {
     },
     variables: { id: id }
   });
+  const dirty = name !== data?.project.name
+    || dirtyData.equations.length > 0
+    || dirtyData.responses.length > 0;
+  // unstable_usePrompt({
+  //   when: dirty,
+  //   message: 'You have unsaved changes. Are you sure you want to go?'
+  // });
   const [updateProject, { loading: loadingUpdate }] = useMutation(UPDATE_PROJECT, {
     onError: (e) => {
       console.error(e);
       alert('Failed to save project. Please try again in a moment.');
     },
-    onCompleted: (d) => setDirty(),
+    onCompleted: () => dispatch({ type: 'reset' }),
     variables: {
       id: id,
       name: name,
-      equations: equations,
-      responses: responses
+      equations: dirtyData.equations,
+      responses: dirtyData.responses
     },
     refetchQueries: ['GetProject']
   });
@@ -60,7 +94,6 @@ const ProjectEditor: React.FC = () => {
 
   const onClickSave = useCallback(() => {
     if (loadingUpdate) return;
-    console.log(equations, responses);
     updateProject();
   }, [updateProject, loadingUpdate]);
 
@@ -88,6 +121,11 @@ const ProjectEditor: React.FC = () => {
   if (loading || error)
     return <WaitForData loading={loading} error={error} />;
 
+  const equationComps = data.project.equations.map((e: NamedText) =>
+    <ProjectEquation key={e._id} equation={e} pid={id} dispatch={dispatch} />);
+  const responseComps = data.project.responses.map((e: NamedText) =>
+    <ProjectResponse key={e._id} response={e} pid={id} dispatch={dispatch}/>);
+
   return (
     <div className="container">
       <div className="level">
@@ -109,13 +147,11 @@ const ProjectEditor: React.FC = () => {
       <div className="columns">
         <div className="column">
           <button className={`button${loadingNewEq ? ' is-loading' : ''}`} onClick={onClickNewEq}>New Equation</button>
-          {data.project.equations.map((e: NamedText) =>
-            <ProjectEquation key={e._id} equation={e} pid={id} collector={eCollector} isDirty={setDirty} />)}
+          {equationComps}
         </div>
         <div className="column">
           <button className={`button${loadingNewRes ? ' is-loading' : ''}`} onClick={onClickNewRes}>New Response</button>
-          {data.project.responses.map((e: NamedText) =>
-            <ProjectResponse key={e._id} response={e} pid={id} collector={rCollector} isDirty={setDirty} />)}
+          {responseComps}
         </div>
       </div>
     </div>
