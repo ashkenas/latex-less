@@ -6,7 +6,9 @@ export type NamedText = {
 
 export type Project = {
   _id: string,
-  firebaseId: string,
+  name: string,
+  left: string,
+  right: string,
   lastEdited: number,
   equations: NamedText[],
   responses: NamedText[]

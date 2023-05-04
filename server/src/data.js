@@ -309,9 +309,9 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
 
 export const updateProject = async (uid, id, name, left, right, equations, responses) => {
   const col = await users();
-  name = name.trim();
-  left = left.trim();
-  right = right.trim();
+  name = name && name.trim();
+  left = left && left.trim();
+  right = right && right.trim();
   if (name || left || right) {
     const fields = {};
     if (name)

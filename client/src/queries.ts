@@ -60,6 +60,8 @@ query GetProject($id: ID!) {
   project(id: $id) {
     _id
     name
+    left
+    right
     lastEdited
     equations {
       _id
@@ -76,10 +78,12 @@ query GetProject($id: ID!) {
 `;
 
 export const UPDATE_PROJECT = gql`
-mutation UpdateProject($id: ID!, $name: String, $equations: [NamedTextInput], $responses: [NamedTextInput] ) {
-  updateProject(id: $id, name: $name, equations: $equations, responses: $responses) {
+mutation UpdateProject($id: ID!, $name: String, $left: String, $right: String, $equations: [NamedTextInput], $responses: [NamedTextInput] ) {
+  updateProject(id: $id, name: $name, left: $left, right: $right, equations: $equations, responses: $responses) {
     _id
     name
+    left
+    right
     lastEdited
     equations {
       _id

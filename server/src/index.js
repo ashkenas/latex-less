@@ -52,6 +52,8 @@ expressApp.use('/graphql', cors(), expressMiddleware(server, {
     if (req.firebaseId)
       return { uid: req.firebaseId };
 
+      console.log(req.body);
+
     throw new GraphQLError('Unauthenticated', {
       extensions: {
         code: 'UNAUTHENTICATED',

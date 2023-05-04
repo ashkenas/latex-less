@@ -44,6 +44,7 @@ const ProjectEditor: React.FC = () => {
   const [name, setName] = useState('');
   const [left, setLeft] = useState('');
   const [right, setRight] = useState('');
+  console.log(left, right);
   const [dirtyData, dispatch] = useReducer(dirtyDataReducer, {
     equations: [],
     responses: []
@@ -59,6 +60,8 @@ const ProjectEditor: React.FC = () => {
     variables: { id: id }
   });
   const dirty = name !== data?.project.name
+    || left !== data?.project.left
+    || right !== data?.project.right
     || dirtyData.equations.length > 0
     || dirtyData.responses.length > 0;
   unstable_usePrompt({
@@ -146,36 +149,28 @@ const ProjectEditor: React.FC = () => {
           </div>
         </div>
         <div className="level">
-          <div className="level-left">
-            <div className="level-item">
-              <label className="label">
-                Author
-                <input type="text" className="input" value={left}
-                  onChange={(e) => setLeft(e.target.value)}/>
-              </label>
-            </div>
-          </div>
           <div className="level-item">
             <button className="button" onClick={() => setRenaming(true)}>Rename</button>
             <button className={`button${loadingUpdate ? ' is-loading' : ''}${dirty ? ' is-link' : ''}`}
               onClick={onClickSave}>Save</button>
           </div>
-          <div className="level-right">
-            <div className="level-item">
-              <label className="label">
-                Header Right
-                <input type="text" className="input" value={right}
-                  onChange={(e) => setRight(e.target.value)}/>
-              </label>
-            </div>
-          </div>
         </div>
         <div className="columns">
           <div className="column">
+            <label className="label">
+              Author
+              <input type="text" className="input" value={left}
+                onChange={(e) => setLeft(e.target.value)}/>
+            </label>
             <button className={`button${loadingNewEq ? ' is-loading' : ''}`} onClick={onClickNewEq}>New Equation</button>
             {equationComps}
           </div>
           <div className="column">
+            <label className="label">
+              Header Right
+              <input type="text" className="input" value={right}
+                onChange={(e) => setRight(e.target.value)}/>
+            </label>
             <button className={`button${loadingNewRes ? ' is-loading' : ''}`} onClick={onClickNewRes}>New Response</button>
             {responseComps}
           </div>
