@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { users } from "./mongo/collections";
+import { users } from "./mongo/collections.js";
 import { ObjectId } from "mongodb";
 
 const notFound = (msg) => {

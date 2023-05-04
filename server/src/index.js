@@ -3,35 +3,54 @@ config();
 import { initializeApp, applicationDefault } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { readFileSync } from "fs";
-import resolvers from "./resolvers";
+import resolvers from "./resolvers.js";
 import { GraphQLError } from "graphql";
+import express from "express";
+import cors from "cors";
+import http from "http"
+import { getUserProject, stringify } from "./data.js";
+import { projectToFile } from "./latex.js";
 
-const app = initializeApp({
+const firebaseApp = initializeApp({
   credential: applicationDefault()
 });
 
 const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
 
+const expressApp = express();
+const httpServer = http.createServer(expressApp);
+
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
 });
 
-await startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req, res }) => {
-    const token = req.headers.authorization || '';
+await server.start();
 
-    if (token) {
-      try {
-        const { uid } = await getAuth(app).verifyIdToken(token, true);
-        return { uid };
-      } catch (e) {
-        console.error(e);
-      }
+expressApp.use(express.json());
+expressApp.use(async (req, res, next) => {
+  const token = req.headers.authorization || '';
+
+  if (token) {
+    try {
+      const { uid } = await getAuth(firebaseApp).verifyIdToken(token, true);
+      req.firebaseId = uid;
+      return next();
+    } catch (e) {
+      console.error(e);
     }
+  }
+
+  next();
+});
+expressApp.use('/graphql', cors(), expressMiddleware(server, {
+  context: async ({ req }) => {
+    if (req.firebaseId)
+      return { uid: req.firebaseId };
 
     throw new GraphQLError('Unauthenticated', {
       extensions: {
@@ -40,6 +59,34 @@ await startStandaloneServer(server, {
       }
     });
   }
+}));
+
+expressApp.post('/export', async (req, res) => {
+  if (!req.firebaseId)
+    return res.status(401).send('Unauthenticated.');
+  
+  let pid = req.body.id;
+  if (!pid || typeof pid !== 'string' || !(pid = pid.trim()))
+    return res.status(400).send('Invalid id.');
+
+  let project;
+  try {
+    project = stringify(await getUserProject(req.firebaseId, pid));
+  } catch (e) {
+    if (e instanceof GraphQLError && e.extensions.code === 'NOTFOUND') {
+      return res.status(404).send('Project not found.');
+    } else {
+      console.error(e);
+      return res.status(500).send('Internal server error.');
+    }
+  }
+
+  res.sendFile(await projectToFile(project));
 });
 
-console.log('Apollo online at http://localhost:4000/');
+expressApp.get('*', (_, res) => res.status(404).send('This website is not public.'))
+
+httpServer.listen({ port: 4000 }, () => {
+  console.log('Express w/ Apollo online at http://localhost:4000/');
+});
+

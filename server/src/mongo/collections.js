@@ -1,4 +1,4 @@
-import { dbConnection } from "./connection";
+import { dbConnection } from "./connection.js";
 
 const memoCollection = (collection) => {
   let _col;

@@ -1,6 +1,19 @@
-import { GraphQLError } from "graphql";
-import { addProjectEquation, addProjectResponse, getUser, getUserProject, newEquation, newProject, removeProjectEquation, removeProjectResponse, removeUserEquation, removeUserProject, stringify, updateEquation, updateProject } from "./data";
-import { getUserEquation } from "./data";
+import {
+  addProjectEquation,
+  addProjectResponse,
+  getUser,
+  getUserEquation,
+  getUserProject,
+  newEquation,
+  newProject,
+  removeProjectEquation,
+  removeProjectResponse,
+  removeUserEquation,
+  removeUserProject,
+  stringify,
+  updateEquation,
+  updateProject
+} from "./data.js";
 
 const userProjects = async (_, _args, ctx) => {
   const user = await getUser(ctx.uid);
