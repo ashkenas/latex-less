@@ -8,7 +8,7 @@
 @import "bulma/sass/elements/button.sass";
 @import "bulma/sass/form/_all.sass";
 
-.level button:first-child {
+.level button:not(:last-child) {
   margin-right: 1rem;
 }
 

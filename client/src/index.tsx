@@ -25,7 +25,7 @@ const router = createBrowserRouter(
 )
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: `${process.env.REACT_APP_BACKEND}graphql`,
 });
 
 const authLink = setContext(async (_, { headers }) => {

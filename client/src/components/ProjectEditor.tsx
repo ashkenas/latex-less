@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { unstable_usePrompt, useParams } from 'react-router-dom';
+import { AuthContext } from '../firebase/Auth';
 import { ADD_EQUATION, ADD_RESPONSE, GET_PROJECT, UPDATE_PROJECT } from '../queries';
 import '../styles/ProjectEditor.scss';
 import { NamedText } from '../typings/gql';
@@ -50,6 +51,7 @@ const dirtyDataReducer = (state: DirtyData, action: DirtyDataDispatchAction) => 
 };
 
 const ProjectEditor: React.FC = () => {
+  const user = useContext(AuthContext);
   const [renaming, setRenaming] = useState(false)
   const [name, setName] = useState('');
   const [left, setLeft] = useState('');
@@ -125,6 +127,15 @@ const ProjectEditor: React.FC = () => {
     newResponse();
   }, [newResponse, loadingNewRes]);
 
+  const onClickExport = useCallback(() => {
+    user?.getIdToken().then(token =>
+      window.open(
+        `${process.env.REACT_APP_BACKEND}export/${data?.project._id}?token=${token}`,
+        '_blank'
+      )
+    );
+  }, [user, data?.project._id])
+
   useEffect(() => {
     const listener = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -162,6 +173,7 @@ const ProjectEditor: React.FC = () => {
             <button className="button" onClick={() => setRenaming(true)}>Rename</button>
             <button className={`button${loadingUpdate ? ' is-loading' : ''}${dirty ? ' is-link' : ''}`}
               onClick={onClickSave}>Save</button>
+            <button onClick={onClickExport} className="button">Export</button>
           </div>
         </div>
         <div className="columns">

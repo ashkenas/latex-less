@@ -13,6 +13,8 @@ import cors from "cors";
 import http from "http"
 import { getUserProject, stringify } from "./data.js";
 import { projectToFile } from "./latex.js";
+import path from "path";
+import { unlink } from "fs/promises";
 
 const firebaseApp = initializeApp({
   credential: applicationDefault()
@@ -33,7 +35,7 @@ await server.start();
 
 expressApp.use(express.json());
 expressApp.use(async (req, res, next) => {
-  const token = req.headers.authorization || '';
+  const token = req.headers.authorization || req.query.token || '';
 
   if (token) {
     try {
@@ -63,11 +65,11 @@ expressApp.use('/graphql', cors(), expressMiddleware(server, {
   }
 }));
 
-expressApp.get('/export', async (req, res) => {
+expressApp.get('/export/:id', async (req, res) => {
   if (!req.firebaseId)
     return res.status(401).send('Unauthenticated.');
   
-  let pid = req.body.id;
+  let pid = req.params.id;
   if (!pid || typeof pid !== 'string' || !(pid = pid.trim()))
     return res.status(400).send('Invalid id.');
 
@@ -83,7 +85,26 @@ expressApp.get('/export', async (req, res) => {
     }
   }
 
-  res.sendFile(await projectToFile(project));
+  try {
+    const relativePath = await projectToFile(project);
+    const absolutePath = path.resolve(relativePath);
+    return res.sendFile(absolutePath, async (err) => {
+      if (err) {
+        console.error(err);
+        if (!res.headersSent) return res.status(500).send('Internal server error.');
+      } else {
+        try {
+          await unlink(absolutePath);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    if (!res.headersSent)
+      return res.status(500).send('Internal server error.');
+  }
 });
 
 expressApp.get('*', (_, res) => res.status(404).send('This website is not public.'))
