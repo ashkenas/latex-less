@@ -42,7 +42,8 @@ export default function Equation({ equation }: any) {
         <p className="card-header-title"><>
           { editing
           ? <input type="text" value={name} className="input"
-              onChange={(e) => setName(e.target.value)} />
+              onChange={(e) => setName(e.target.value)}
+              aria-label="equation name" />
           : name }
           {(equation.text !== eq || equation.name !== name) && '*'}
         </></p>
