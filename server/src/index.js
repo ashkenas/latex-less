@@ -94,7 +94,12 @@ expressApp.get('/export/:id', async (req, res) => {
         if (!res.headersSent) return res.status(500).send('Internal server error.');
       } else {
         try {
+          const noExt = absolutePath.split('.').slice(0, -1).join('.');
+          const auxFile = `${noExt}.aux`;
+          const logFile = `${noExt}.log`;
           await unlink(absolutePath);
+          await unlink(logFile);
+          await unlink(auxFile);
         } catch (e) {
           console.error(e);
         }
