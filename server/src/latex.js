@@ -1,5 +1,4 @@
 import { spawn } from "child_process";
-import fs from "fs/promises";
 
 const encodings = {
   '`': '\\`{}',
@@ -16,7 +15,7 @@ const encodings = {
 };
 
 const escapeInput = (text) => {
-  return text.replaceAll(/([\^\\`~$&%#{}])/g, (match, c, offset, string, groups) => encodings[c]);
+  return text.replaceAll(/[\^\\`~$&%#{}]/g, (c) => encodings[c]);
 };
 
 const makeTex = (name, left, right, responses) => {
@@ -43,16 +42,43 @@ ${right ? `\\rhead{${escapeInput(right)}}` : ''}
 
 \\begin{document}
 ${responses.map(r => `
-\\section*{${escapeInput(r.name)}}
+\\section*{${r.name}}
 
-${escapeInput(r.text)}
+${r.text}
 `).join('\n')}
 \\end{document}
 
 `};
 
+const equationRegex = /(.*?)((?<!{)(?:{{[^{}]*?}})(?!})|(?:{{{[^{}]*?}}}))/g;
+
+const processResponse = equations => response => {
+  let compiled = '';
+  let match;
+  let lastIndex = -1;
+  const text = response.text.split('\n').join('\\\\');
+  while ((match = equationRegex.exec(text)) !== null) {
+    const block = match[2].startsWith('{{{');
+    const offset = block ? 3 : 2;
+    const name = match[2].substring(offset, match[2].length - offset).trim();
+    const equation = equations[name];
+    if (block && equation) {
+      compiled += escapeInput(match[1]) + '\\begin{equation*}' + equation + '\\end{equation*}';
+    } else {
+      compiled += escapeInput(match[1]) + (equation ? `$${equation}$` : escapeInput(match[2]));
+    }
+    lastIndex = equationRegex.lastIndex;
+  }
+  return {
+    name: escapeInput(response.name),
+    text: compiled + escapeInput(text.substring(lastIndex + 1))
+  };
+};
+
 export const projectToFile = async (project) => {
-  const text = makeTex(project.name, project.left, project.right, project.responses);
+  const equations = project.equations.reduce((es, e) => (es[e.name] = e.text, es), {});
+  const processed = project.responses.map(processResponse(equations));
+  const text = makeTex(project.name, project.left, project.right, processed);
   const cleanName = project.name.replaceAll(/[^a-zA-Z0-9]/g, '');
   const jobName = `${cleanName}-${Date.now()}`;
   const latex = spawn('pdflatex', ['-output-directory=docs', `-job-name=${jobName}`, '-halt-on-error', '--']);
