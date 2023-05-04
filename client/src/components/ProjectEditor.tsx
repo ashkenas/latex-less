@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { unstable_usePrompt, useParams } from 'react-router-dom';
 import { ADD_EQUATION, ADD_RESPONSE, GET_PROJECT, UPDATE_PROJECT } from '../queries';
 import '../styles/ProjectEditor.scss';
@@ -42,6 +42,8 @@ const dirtyDataReducer = (state: DirtyData, action: DirtyDataDispatchAction) => 
 const ProjectEditor: React.FC = () => {
   const [renaming, setRenaming] = useState(false)
   const [name, setName] = useState('');
+  const [left, setLeft] = useState('');
+  const [right, setRight] = useState('');
   const [dirtyData, dispatch] = useReducer(dirtyDataReducer, {
     equations: [],
     responses: []
@@ -51,6 +53,8 @@ const ProjectEditor: React.FC = () => {
     onCompleted: (d) => {
       setRenaming(false);
       setName(d.project.name);
+      setLeft(d.project.left);
+      setRight(d.project.right);
     },
     variables: { id: id }
   });
@@ -70,6 +74,8 @@ const ProjectEditor: React.FC = () => {
     variables: {
       id: id,
       name: name,
+      left: left,
+      right: right,
       equations: dirtyData.equations,
       responses: dirtyData.responses
     },
@@ -133,16 +139,35 @@ const ProjectEditor: React.FC = () => {
           <div className="level-item">
             <h1 className="title">
               {renaming
-              ? <input type="text" onChange={(e) => setName(e.target.value)} value={name} />
+              ? <input type="text" className="input" value={name}
+                  onChange={(e) => setName(e.target.value)} />
               : name }
             </h1>
           </div>
         </div>
         <div className="level">
+          <div className="level-left">
+            <div className="level-item">
+              <label className="label">
+                Author
+                <input type="text" className="input" value={left}
+                  onChange={(e) => setLeft(e.target.value)}/>
+              </label>
+            </div>
+          </div>
           <div className="level-item">
             <button className="button" onClick={() => setRenaming(true)}>Rename</button>
             <button className={`button${loadingUpdate ? ' is-loading' : ''}${dirty ? ' is-link' : ''}`}
               onClick={onClickSave}>Save</button>
+          </div>
+          <div className="level-right">
+            <div className="level-item">
+              <label className="label">
+                Header Right
+                <input type="text" className="input" value={right}
+                  onChange={(e) => setRight(e.target.value)}/>
+              </label>
+            </div>
           </div>
         </div>
         <div className="columns">

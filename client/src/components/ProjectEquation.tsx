@@ -82,7 +82,8 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, dispat
       <header className="card-header">
         <p className="card-header-title"><>
           { editing
-          ? <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          ? <input type="text" value={name} className="input"
+              onChange={(e) => setName(e.target.value)} />
           : name }
           {dirty && '*'}
         </></p>

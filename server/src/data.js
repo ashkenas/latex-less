@@ -113,6 +113,8 @@ export const newProject = async (uid) => {
       projects: {
         _id: pid,
         name: 'New Project',
+        left: '',
+        right: '',
         lastEdited: Date.now(),
         equations: (await getUser(uid)).equations,
         responses: []
@@ -305,9 +307,19 @@ const updateInProjectArray = async (uid, pid, id, array, name, text) => {
     throw new GraphQLError('Failed to update project.');
 };
 
-export const updateProject = async (uid, id, name, equations, responses) => {
+export const updateProject = async (uid, id, name, left, right, equations, responses) => {
   const col = await users();
-  if (name && (name = name.trim())) {
+  name = name.trim();
+  left = left.trim();
+  right = right.trim();
+  if (name || left || right) {
+    const fields = {};
+    if (name)
+      fields["projects.$.name"] = name;
+    if (left)
+      fields["projects.$.left"] = left;
+    if (right)
+      fields["projects.$.right"] = right;
     const res = await col.updateOne({
       firebaseId: uid,
       projects: {
@@ -318,7 +330,7 @@ export const updateProject = async (uid, id, name, equations, responses) => {
     }, {
       $set: {
         "projects.$.lastEdited": Date.now(),
-        "projects.$.name": name
+        ...fields
       }
     });
   

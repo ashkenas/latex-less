@@ -41,7 +41,8 @@ export default function Equation({ equation }: any) {
       <header className="card-header">
         <p className="card-header-title"><>
           { editing
-          ? <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          ? <input type="text" value={name} className="input"
+              onChange={(e) => setName(e.target.value)} />
           : name }
           {(equation.text !== eq || equation.name !== name) && '*'}
         </></p>

@@ -13,6 +13,8 @@ input NamedTextInput {
 type Project {
   _id: ID!
   name: String!
+  left: String!
+  right: String!
   lastEdited: Float!
   equations: [NamedText!]!
   responses: [NamedText!]!
@@ -36,7 +38,7 @@ type Query {
 type Mutation {
   newProject: Project!
   newEquation: NamedText!
-  updateProject(id: ID!, name: String, equations: [NamedTextInput], responses: [NamedTextInput]): Project!
+  updateProject(id: ID!, name: String, left: String, right: String, equations: [NamedTextInput], responses: [NamedTextInput]): Project!
   updateEquation(id: ID!, name: String!, text: String!): NamedText!
   addProjectEquation(id: ID!, name: String, text: String): NamedText!
   addProjectResponse(id: ID!): NamedText!
