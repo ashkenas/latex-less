@@ -11,7 +11,7 @@ const encodings = {
   '$': '\\$',
   '{': '\\{',
   '}': '\\}',
-  '\\': '\\\\'
+  '\\': '\\textbackslash{}'
 };
 
 const escapeInput = (text) => {
@@ -56,8 +56,7 @@ const processResponse = equations => response => {
   let compiled = '';
   let match;
   let lastIndex = -1;
-  const text = response.text.split('\n').join('\\\\');
-  while ((match = equationRegex.exec(text)) !== null) {
+  while ((match = equationRegex.exec(response.text)) !== null) {
     const block = match[2].startsWith('{{{');
     const offset = block ? 3 : 2;
     const name = match[2].substring(offset, match[2].length - offset).trim();
@@ -69,9 +68,10 @@ const processResponse = equations => response => {
     }
     lastIndex = equationRegex.lastIndex;
   }
+  compiled += escapeInput(response.text.substring(lastIndex + 1))
   return {
     name: escapeInput(response.name),
-    text: compiled + escapeInput(text.substring(lastIndex + 1))
+    text: compiled.split('\n').join('\\\\')
   };
 };
 
