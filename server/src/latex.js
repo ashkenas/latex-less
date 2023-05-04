@@ -50,7 +50,7 @@ ${r.text}
 
 `};
 
-const equationRegex = /(.*?)((?<!{)(?:{{[^{}]*?}})(?!})|(?:{{{[^{}]*?}}}))/g;
+const equationRegex = /(.*?)((?<!{)(?:{{[^{}]*?}})(?!})|(?:{{{[^{}]*?}}}))/gs;
 
 const processResponse = equations => response => {
   let compiled = '';
