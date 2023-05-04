@@ -145,6 +145,9 @@ const ProjectEditor: React.FC = () => {
       if ((e.ctrlKey || e.metaKey) && e.key ==='s') {
         e.preventDefault();
         updateProject();
+      } else if ((e.ctrlKey || e.metaKey) && e.key ==='p') {
+        e.preventDefault();
+        onClickExport();
       }
     };
     addEventListener('keydown', saveListener);
