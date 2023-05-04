@@ -31,6 +31,16 @@ const dirtyDataReducer = (state: DirtyData, action: DirtyDataDispatchAction) => 
     if (idx >= 0) newState.responses[idx] = action.data as NamedText;
     else newState.responses.push(action.data as NamedText);
     return newState;
+  } else if (action.type === 'removeEquation') {
+    return {
+      responses: [...state.responses],
+      equations: state.equations.filter(d => d._id !== action.data?._id)
+    };
+  } else if (action.type === 'removeResponse') {
+    return {
+      equations: [...state.equations],
+      responses: state.responses.filter(d => d._id !== action.data?._id)
+    };
   } else if (action.type === 'reset') {
     return { equations: [], responses: [] };
   } else {
@@ -44,7 +54,6 @@ const ProjectEditor: React.FC = () => {
   const [name, setName] = useState('');
   const [left, setLeft] = useState('');
   const [right, setRight] = useState('');
-  console.log(left, right);
   const [dirtyData, dispatch] = useReducer(dirtyDataReducer, {
     equations: [],
     responses: []

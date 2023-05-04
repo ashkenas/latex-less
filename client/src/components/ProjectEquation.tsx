@@ -70,11 +70,10 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, dispat
 
   const dirty = equation.text !== eq || equation.name !== name;
   useEffect(() => {
-    if (dirty)
-      dispatch({
-        type: 'equation',
-        data: { _id: equation._id, name, text: eq }
-      });
+    dispatch({
+      type: dirty ? 'equation' : 'removeEquation',
+      data: { _id: equation._id, name, text: eq }
+    });
   }, [eq, name, dirty, dispatch, equation._id]);
 
   return (

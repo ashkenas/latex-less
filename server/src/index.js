@@ -63,7 +63,7 @@ expressApp.use('/graphql', cors(), expressMiddleware(server, {
   }
 }));
 
-expressApp.post('/export', async (req, res) => {
+expressApp.get('/export', async (req, res) => {
   if (!req.firebaseId)
     return res.status(401).send('Unauthenticated.');
   

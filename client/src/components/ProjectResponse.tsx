@@ -28,14 +28,13 @@ const ProjectResponse: React.FC<ProjectResponseProps> = ({ response, pid, dispat
       deleteResponse();
   }, [deleteResponse, loadingDel]);
 
+  const dirty = res !== response.text || name !== response.name;
   useEffect(() => {
-    const dirty = res !== response.text || name !== response.name;
-    if (dirty)
-      dispatch({
-        type: 'response',
-        data: { _id: response._id, name, text: res }
+    dispatch({
+      type: dirty ? 'response' : 'removeResponse',
+      data: { _id: response._id, name, text: res }
     });
-  }, [res, name, dispatch, response]);
+  }, [res, name, dirty, dispatch, response._id]);
 
   return (<>
     <label className="label" htmlFor={`qn${response._id}`}>Question Name</label>
