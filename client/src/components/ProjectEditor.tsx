@@ -137,14 +137,25 @@ const ProjectEditor: React.FC = () => {
   }, [user, data?.project._id])
 
   useEffect(() => {
-    const listener = (e: BeforeUnloadEvent) => {
+    const leaveListener = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       return e.returnValue = "You have unsaved changes. Are you sure you want to go?";
     };
+    const saveListener = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key ==='s') {
+        e.preventDefault();
+        updateProject();
+      }
+    };
+    addEventListener('keydown', saveListener);
+    const cleanups = [
+      () => removeEventListener('keydown', saveListener)
+    ];
     if (dirty) {
-      addEventListener('beforeunload', listener, true);
-      return () => removeEventListener('beforeunload', listener, true);
+      addEventListener('beforeunload', leaveListener, true);
+      cleanups.push(() => removeEventListener('beforeunload', leaveListener, true));
     }
+    return () => cleanups.forEach(f => f());
   }, [dirty])
 
   if (loading || error)
