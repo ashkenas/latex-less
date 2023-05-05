@@ -33,8 +33,10 @@ export default function Equation({ equation }: any) {
 
   const onClickSave = useCallback(() => {
     if (loading) return;
+    if ((/[{}]/.test(name)))
+      return alert(`Equation names cannot have braces in them.`)
     updateEquation();
-  }, [updateEquation, loading]);
+  }, [updateEquation, loading, name]);
 
   return (
     <div className="card">

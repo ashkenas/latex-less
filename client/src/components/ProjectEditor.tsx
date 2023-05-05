@@ -114,8 +114,12 @@ const ProjectEditor: React.FC = () => {
 
   const onClickSave = useCallback(() => {
     if (loadingUpdate) return;
+    const badEquation = dirtyData.equations.find(e => (/[{}]/g).test(e.name));
+    if (badEquation)
+      return alert(`Equation names cannot have braces in them.
+Violated by equation '${badEquation.name}'`)
     updateProject();
-  }, [updateProject, loadingUpdate]);
+  }, [updateProject, loadingUpdate, dirtyData]);
 
   const onClickNewEq = useCallback(() => {
     if (loadingNewEq) return;
@@ -159,7 +163,7 @@ const ProjectEditor: React.FC = () => {
       cleanups.push(() => removeEventListener('beforeunload', leaveListener, true));
     }
     return () => cleanups.forEach(f => f());
-  }, [dirty])
+  }, [dirty, onClickExport, updateProject])
 
   if (loading || error)
     return <WaitForData loading={loading} error={error} />;

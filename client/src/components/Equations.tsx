@@ -30,8 +30,8 @@ export default function Equations() {
   return (<>
     <div className="container">
       <section className="section">
-        <button onClick={onClickNew}
-          className={`button${loadingNew ? ' loading' : ''}`}>New Equation</button>
+        <button className={`button${loadingNew ? ' loading' : ''}`}
+          onClick={onClickNew}>New Equation</button>
         {projects}
       </section>
     </div>
