@@ -6,6 +6,13 @@ Final project for CS-554
 ### Dependencies
 - A MongoDB instance
 - A Firebase Authentication project
+- A LaTeX installation (tested with [MikTex](https://miktex.org/howto/download-miktex))
+  - Either configure the LaTeX package manager to auto-install packages on-demand, or install the following packages manually:
+    - fancyhdr
+    - inputenc
+    - csquotes
+    - amsmath
+    - amssymb
 
 ### Environment Setup
 Both the client and server need a `.env` file places in their respective folders (`client` and `server`). The values that these variables will take on come from the Firebase console and the Google IAM console.
@@ -33,6 +40,8 @@ REACT_APP_BACKEND|string|URL to graphql/latex backend
 The Firebase values can all be located in the Firebase console under project settings.
 
 ### Steps
+
+After MongoDB has been installed and configured, and LaTeX has been installed, the following steps walk through installing and running this project:
 
 1. Clone this repo
 2. Open a terminal at the repo's root folder
