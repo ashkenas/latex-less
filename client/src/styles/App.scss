@@ -1,0 +1,25 @@
+@import "./utils.scss";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/components/navbar.sass";
+
+@mixin darkHover($bg: white) {
+  background-color: $bg;
+
+  &:hover {
+    background-color: darken($bg, 10%);
+  }
+
+  &:active, &:focus {
+    background-color: darken($bg, 20%);
+  }
+}
+
+nav {
+  button {
+    @extend a;
+    background: inherit;
+    font-size: inherit;
+    border: none;
+  }
+}

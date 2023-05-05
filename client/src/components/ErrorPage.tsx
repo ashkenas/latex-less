@@ -1,4 +1,4 @@
-import '../styles/ErrorPage.css';
+import '../styles/ErrorPage.scss';
 
 type ErrorProps = {
     code: number,
