@@ -92,8 +92,8 @@ const ProjectEquation: React.FC<ProjectEquationProps> = ({ equation, pid, dispat
         <EquationEditor
           value={eq}
           onChange={setEq}
-          autoCommands="pi theta sqrt sum prod alpha beta gamma rho"
-          autoOperatorNames="sin cos tan"
+          autoCommands="bar sqrt sum prod int alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omikron pi rho sigma tau upsilon phi chi psi omega Pi Sigma Omega rangle langle otimes neq cdot leq geq ll gg approx angle and or infty"
+          autoOperatorNames="sin cos tan mod"
         />
       </div>
       <footer className="card-footer">
