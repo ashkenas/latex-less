@@ -49,12 +49,10 @@ expressApp.use(async (req, res, next) => {
 
   next();
 });
-expressApp.use('/graphql', cors(), expressMiddleware(server, {
+expressApp.use('/api/graphql', cors(), expressMiddleware(server, {
   context: async ({ req }) => {
     if (req.firebaseId)
       return { uid: req.firebaseId };
-
-      console.log(req.body);
 
     throw new GraphQLError('Unauthenticated', {
       extensions: {
@@ -65,7 +63,7 @@ expressApp.use('/graphql', cors(), expressMiddleware(server, {
   }
 }));
 
-expressApp.get('/export/:id', async (req, res) => {
+expressApp.get('/api/export/:id', async (req, res) => {
   if (!req.firebaseId)
     return res.status(401).send('Unauthenticated.');
   
