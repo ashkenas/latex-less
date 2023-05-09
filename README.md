@@ -49,6 +49,6 @@ After MongoDB has been installed and configured, and LaTeX has been installed, t
 4. Run `cd server`
 5. Run `npm i`
 6. Run `cd ../client`
-7. Run `npm i`
+7. Run `npm i --legacy-peer-deps`
 8. Run `cd ..`
 9. Run `npm start`

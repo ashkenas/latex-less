@@ -196,6 +196,26 @@ Violated by equation '${badEquation.name}'`)
         </div>
         <div className="columns">
           <div className="column">
+              <h2 className="title is-4">Using Equations</h2>
+              <p>
+                Build all the equations you would like to use in the middle
+                column. When you've finished an equation, you can use it in
+                a response by embbedding its name in curly braces. Equation
+                names are case-insensitive.
+              </p>
+              <p>
+                To use an equation in-line, use two curly braces like so:
+                &nbsp;<code>{"{{name}}"}</code>
+              </p>
+              <p>
+                To use an equation on its own line, use three curly braces
+                like so: <code>{"{{{name}}}"}</code>
+              </p>
+              <p>
+                If you mismatch the number of braces, or there's no
+                equation with the name you used, the placeholder will show
+                up in the final document.
+              </p>
               <h2 className="title is-4">Commands</h2>
               <p>
                 Most LaTeX symbol commands can be used by typing a backslash

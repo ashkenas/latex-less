@@ -59,7 +59,7 @@ const processResponse = equations => response => {
   while ((match = equationRegex.exec(response.text)) !== null) {
     const block = match[2].startsWith('{{{');
     const offset = block ? 3 : 2;
-    const name = match[2].substring(offset, match[2].length - offset).trim();
+    const name = match[2].substring(offset, match[2].length - offset).trim().toLowerCase();
     const equation = equations[name];
     if (block && equation) {
       compiled += escapeInput(match[1]) + '\\begin{equation*}' + equation + '\\end{equation*}';
@@ -76,7 +76,7 @@ const processResponse = equations => response => {
 };
 
 export const projectToFile = async (project) => {
-  const equations = project.equations.reduce((es, e) => (es[e.name] = e.text, es), {});
+  const equations = project.equations.reduce((es, e) => (es[e.name.toLowerCase()] = e.text, es), {});
   const processed = project.responses.map(processResponse(equations));
   const text = makeTex(project.name, project.left, project.right, processed);
   const cleanName = project.name.replaceAll(/[^a-zA-Z0-9]/g, '');
