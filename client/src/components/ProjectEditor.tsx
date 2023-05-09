@@ -56,6 +56,7 @@ const ProjectEditor: React.FC = () => {
   const [name, setName] = useState('');
   const [left, setLeft] = useState('');
   const [right, setRight] = useState('');
+  const [saveNow, setSaveNow] = useState<NodeJS.Timeout | null>(null);
   const [dirtyData, dispatch] = useReducer(dirtyDataReducer, {
     equations: [],
     responses: []
@@ -84,7 +85,11 @@ const ProjectEditor: React.FC = () => {
       console.error(e);
       alert('Failed to save project. Please try again in a moment.');
     },
-    onCompleted: () => dispatch({ type: 'reset' }),
+    onCompleted: () => {
+      if (saveNow)
+        clearTimeout(saveNow);
+      setSaveNow(setTimeout(() => setSaveNow(null), 30000));
+    },
     variables: {
       id: id,
       name: name,
@@ -172,6 +177,8 @@ Violated by equation '${badEquation.name}'`)
     <ProjectEquation key={e._id} equation={e} pid={id} dispatch={dispatch} />);
   const responseComps = data.project.responses.map((e: NamedText) =>
     <ProjectResponse key={e._id} response={e} pid={id} dispatch={dispatch}/>);
+
+  if (!saveNow) updateProject();
 
   return (
     <div className="container is-fluid">
