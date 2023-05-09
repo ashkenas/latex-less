@@ -2,11 +2,9 @@
   "scripts": {
     "client": "npm run start --prefix client",
     "server": "npm run start --prefix server",
-    "seed": "node seed.js",
     "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
-    "concurrently": "^8.0.1",
-    "mongodb": "^5.4.0"
+    "concurrently": "^8.0.1"
   }
 }
