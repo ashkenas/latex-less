@@ -14,7 +14,12 @@ const WaitForData: WaitForDataType = ({ loading, error }) => {
       </div>
     </div>
   );
-  if (error) return <ErrorPage code={500} message={error.message} />
+  if (error) {
+    if (error.networkError) {
+      return <ErrorPage code={error.networkError.statusCode}
+                message={error.networkError.result.errors[0].message} />;
+    } else return <ErrorPage code={500} message={error.message} />;
+  }
   return <p>Invalid use of WaitForData</p>;
 }
 

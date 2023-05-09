@@ -76,13 +76,14 @@ const ProjectEditor: React.FC = () => {
     || dirtyData.equations.length > 0
     || dirtyData.responses.length > 0;
   unstable_usePrompt({
-    when: dirty,
+    when: dirty && data && data.project,
     message: 'You have unsaved changes. Are you sure you want to go?'
   });
   const [updateProject, { loading: loadingUpdate }] = useMutation(UPDATE_PROJECT, {
     onError: (e) => {
       console.error(e);
-      alert('Failed to save project. Please try again in a moment.');
+      if (!error)
+        alert('Failed to save project. Please try again in a moment.');
     },
     onCompleted: () => {
       if (saveNow)
@@ -163,12 +164,12 @@ Violated by equation '${badEquation.name}'`)
     const cleanups = [
       () => removeEventListener('keydown', saveListener, true)
     ];
-    if (dirty) {
+    if (dirty && data && data.project) {
       addEventListener('beforeunload', leaveListener, true);
       cleanups.push(() => removeEventListener('beforeunload', leaveListener, true));
     }
     return () => cleanups.forEach(f => f());
-  }, [dirty, onClickExport, updateProject])
+  }, [dirty, data, onClickExport, updateProject])
 
   if (loading || error)
     return <WaitForData loading={loading} error={error} />;
