@@ -64,7 +64,6 @@ const ProjectEditor: React.FC = () => {
   const { id } = useParams();
   const { data, loading, error } = useQuery(GET_PROJECT, {
     onCompleted: (d) => {
-      setRenaming(false);
       setName(d.project.name);
       setLeft(d.project.left);
       setRight(d.project.right);
@@ -124,7 +123,8 @@ const ProjectEditor: React.FC = () => {
       return alert(`Equation names cannot have braces in them.
 Violated by equation '${badEquation.name}'`)
     updateProject();
-  }, [updateProject, loadingUpdate, dirtyData]);
+    setRenaming(false);
+  }, [updateProject, loadingUpdate, dirtyData, setRenaming]);
 
   const onClickNewEq = useCallback(() => {
     if (loadingNewEq) return;

@@ -13,7 +13,7 @@ function App() {
 
   return (<>
     <nav className="navbar has-shadow" role="navigation" aria-label="navigation bar">
-      <div className="navbar-menu">
+      <div className="navbar-menu is-active">
         <div className="navbar-start">
           <SmartLink to="/">Home</SmartLink>
           <SmartLink to="/equations">Equations</SmartLink>
