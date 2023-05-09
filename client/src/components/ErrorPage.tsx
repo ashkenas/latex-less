@@ -1,15 +1,19 @@
 import '../styles/ErrorPage.scss';
 
 type ErrorProps = {
-    code: number,
-    message: string
+  code: number,
+  message: string
 }
 
 const ErrorPage: React.FC<ErrorProps> = ({ code, message }) => {
-    return (<div className="error">
-        <h1>{code}</h1>
+  return (
+    <div className="container">
+      <div className="section">
+        <h1 className="title">{code}</h1>
         <p>{message}</p>
-    </div>);
+      </div>
+    </div>
+  );
 };
 
 export default ErrorPage;
