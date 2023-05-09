@@ -52,3 +52,9 @@ After MongoDB has been installed and configured, and LaTeX has been installed, t
 7. Run `npm i --legacy-peer-deps`
 8. Run `cd ..`
 9. Run `npm start`
+
+## Seeding
+To seed the test user, use these steps:
+
+1. Open the cloned repo in a terminal
+2. Run `npm run seed --prefix server`
